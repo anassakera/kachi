@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/auth/LogIn/login_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
-import '../screens/auth/register_screen.dart';
+import '../screens/auth/signup_screen.dart';
 import '../screens/analytics/analytics_screen.dart';
 import '../screens/checks/check_list_screen.dart';
 import '../screens/checks/add_check_screen.dart';
@@ -12,7 +12,7 @@ import '../screens/test/testone.dart';
 
 class AppRoutes {
   // static const String login = '/login';
-  static const String register = '/register';
+  static const String signUp = '/register';
   static const String dashboard = '/dashboard';
   static const String analytics = '/analytics';
   static const String checkList = '/checks';
@@ -25,7 +25,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
-      register: (context) => const RegisterScreen(),
+      signUp: (context) => const MobileSignUpScreen(),
       dashboard: (context) => const DashboardScreen(),
       analytics: (context) => const AnalyticsScreen(),
       checkList: (context) => const CheckListScreen(),
