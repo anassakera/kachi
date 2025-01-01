@@ -10,7 +10,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-//d
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: Constants.supportedLanguages.map(
         (lang) => Locale(lang),
       ),
-      initialRoute: AppRoutes.test,
+      initialRoute: AppRoutes.dashboard,
       routes: AppRoutes.getRoutes(),
     );
   }

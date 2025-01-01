@@ -8,12 +8,13 @@ import '../screens/checks/add_check_screen.dart';
 import '../screens/reports/reports_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/user_management_screen.dart';
-import '../screens/test/testone.dart';
+import '../screens/dashboard/table_add_check.dart';
 
 class AppRoutes {
   // static const String login = '/login';
   static const String signUp = '/register';
   static const String dashboard = '/dashboard';
+  static const String tableAddCheck = '/tableAddCheck';
   static const String analytics = '/analytics';
   static const String checkList = '/checks';
   static const String addCheck = '/checks/add';
@@ -21,7 +22,6 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String userManagement = '/settings/users';
   static const String loginScreen = '/auth';
-  static const String test = '/test';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -34,7 +34,7 @@ class AppRoutes {
       settings: (context) => const SettingsScreen(),
       userManagement: (context) => const UserManagementScreen(),
       loginScreen: (context) => const LoginScreen(),
-      test: (context) => const EditableTableScreen(),
+      tableAddCheck: (context) => const EditableTableScreen(),
     };
   }
 }

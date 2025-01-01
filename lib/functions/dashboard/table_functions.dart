@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
 class TableFunctions {
-  // Data handling functions
-  static List<Map<String, dynamic>> initializeData() {
-    return [
-      {'name': 'Product 1', 'quantity': 10, 'price': 50.0, 'total': 500.0},
-      {'name': 'Product 2', 'quantity': 5, 'price': 100.0, 'total': 500.0},
-    ];
-  }
+  final List<Map<String, dynamic>> data;
+  final Map<String, FocusNode> focusNodes;
+  final Function setState;
+  final BuildContext context;
+  final Function(Map<String, dynamic>) insertNewRow;
 
-  static void initializeFocusNodes(Map<String, FocusNode> focusNodes, List<Map<String, dynamic>> data) {
+  TableFunctions({
+    required this.data,
+    required this.focusNodes,
+    required this.setState,
+    required this.context,
+    required this.insertNewRow,
+  });
+
+  void initializeFocusNodes() {
     focusNodes.forEach((_, node) => node.dispose());
     focusNodes.clear();
 
@@ -21,20 +27,12 @@ class TableFunctions {
     }
   }
 
-  static bool isMobileView(BuildContext context) {
+  bool isMobileView(BuildContext context) {
     return MediaQuery.of(context).size.width < 710;
   }
 
-  static void handleFieldSubmission(
-    BuildContext context,
-    int rowIndex,
-    String key,
-    String value,
-    TextInputType keyboardType,
-    List<Map<String, dynamic>> data,
-    Map<String, FocusNode> focusNodes,
-    Function(int, String, dynamic) updateValue,
-  ) {
+  void handleFieldSubmission(
+      int rowIndex, String key, String value, TextInputType keyboardType) {
     dynamic processedValue = value;
     if (keyboardType == TextInputType.number) {
       processedValue = key == 'price'
@@ -56,33 +54,48 @@ class TableFunctions {
     }
   }
 
-  static void addNewRow(
-    List<Map<String, dynamic>> data,
-    Map<String, FocusNode> focusNodes,
-    Function setState,
-  ) {
+  void updateValue(int rowIndex, String key, dynamic value) {
     setState(() {
-      data.add({
-        'name': '',
-        'quantity': 0,
-        'price': 0.0,
-        'total': '0.00',
-      });
+      data[rowIndex][key] = value;
+      if (key == 'quantity' || key == 'price') {
+        data[rowIndex]['total'] =
+            (data[rowIndex]['quantity'] * data[rowIndex]['price'])
+                .toStringAsFixed(2);
+      }
+    });
+  }
+
+  void addNewRow() {
+    final newRow = {
+      'Date': DateTime.now(),
+      'Échéance': '',
+      'Tireur': '',
+      'Client': '',
+      'N': '',
+      'BQ': '',
+      'Montant': '',
+      'Type': 'Check',
+    };
+    insertNewRow(newRow);
+    setState(() {
       final newRowIndex = data.length - 1;
-      for (var field in ['name', 'quantity', 'price']) {
+      for (var field in [
+        'Date',
+        'Échéance',
+        'Tireur',
+        'Client',
+        'N',
+        'BQ',
+        'Montant',
+        'Type'
+      ]) {
         final key = '${newRowIndex}_$field';
         focusNodes[key] = FocusNode();
       }
     });
   }
 
-  static void removeRow(
-    BuildContext context,
-    int index,
-    List<Map<String, dynamic>> data,
-    Map<String, FocusNode> focusNodes,
-    Function setState,
-  ) {
+  void removeRow(int index) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -110,22 +123,5 @@ class TableFunctions {
         ],
       ),
     );
-  }
-
-  static void updateValue(
-    int rowIndex,
-    String key,
-    dynamic value,
-    List<Map<String, dynamic>> data,
-    Function setState,
-  ) {
-    setState(() {
-      data[rowIndex][key] = value;
-      if (key == 'quantity' || key == 'price') {
-        final quantity = data[rowIndex]['quantity'] as num;
-        final price = data[rowIndex]['price'] as num;
-        data[rowIndex]['total'] = (quantity * price).toStringAsFixed(2);
-      }
-    });
   }
 }

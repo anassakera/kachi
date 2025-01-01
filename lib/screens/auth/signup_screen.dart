@@ -331,7 +331,7 @@ Widget _buildFormField(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
-              color: const Color(0xFF6E6CDF).withOpacity(0.8),
+              color: const Color(0xFF6E6CDF).withValues(alpha: 0.8),
               width: 1,
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../functions/dashboard/table_functions.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/dashboard/table_widgets.dart';
 
 class DrawerMenuItem {
   final IconData icon;
@@ -44,25 +46,143 @@ class DrawerConstants {
   static const double menuItemHeight = 56.0;
 }
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final List<Map<String, dynamic>> _data = [
+    {
+      'Date': DateTime.now(),
+      'Échéance': '',
+      'Tireur': '',
+      'Client': '',
+      'N': '',
+      'BQ': '',
+      'Montant': '',
+      'Type': 'Check',
+    },
+    {
+      'Date': DateTime.now(),
+      'Échéance': '',
+      'Tireur': '',
+      'Client': '',
+      'N': '',
+      'BQ': '',
+      'Montant': '',
+      'Type': 'Effet',
+    },
+  ];
+
+  final Map<String, FocusNode> _focusNodes = {};
+  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
+  late TableFunctions tableFunctions;
+  late TableWidgets tableWidgets;
+
+  @override
+  void initState() {
+    super.initState();
+    tableFunctions = TableFunctions(
+      data: _data,
+      focusNodes: _focusNodes,
+      setState: setState,
+      context: context,
+      insertNewRow: (Map<String, dynamic> newRow) {
+        _data.insert(0, newRow);
+      },
+    );
+    tableWidgets = TableWidgets(
+      data: _data,
+      focusNodes: _focusNodes,
+      onFieldSubmission: tableFunctions.handleFieldSubmission,
+      onRemoveRow: tableFunctions.removeRow,
+      updateValue: tableFunctions.updateValue,
+    );
+    tableFunctions.initializeFocusNodes();
+  }
+
+  @override
+  void dispose() {
+    _focusNodes.forEach((_, node) => node.dispose());
+    _horizontalScrollController.dispose();
+    _verticalScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bool isLargeScreen = MediaQuery.of(context).size.width >= 1200;
+    final bool isLargeScreen = MediaQuery.of(context).size.width >= 720;
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.grey.shade200,
         appBar: _buildResponsiveAppBar(context),
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (isLargeScreen) const ComplexDrawer(),
             Expanded(
-              child: Container(
-                color: Colors.grey.shade200,
-                child: const Center(
-                  child: FlutterLogo(size: 150),
-                ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth < 600) {
+                          return Stack(
+                            children: [
+                              ListView.builder(
+                                padding: const EdgeInsets.all(8),
+                                itemCount: _data.length,
+                                itemBuilder: (context, index) {
+                                  return tableWidgets.buildTableRow(
+                                    index,
+                                    _data[index],
+                                    true,
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                bottom: 16,
+                                right: 16,
+                                child: FloatingActionButton(
+                                  onPressed: tableFunctions.addNewRow,
+                                  tooltip: 'إضافة صف جديد',
+                                  child: const Icon(Icons.add),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Stack(
+                            children: [
+                              SingleChildScrollView(
+                                controller: _verticalScrollController,
+                                child: SingleChildScrollView(
+                                  controller: _horizontalScrollController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: tableWidgets.buildDesktopTable(),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 16,
+                                right: 16,
+                                child: FloatingActionButton(
+                                  onPressed: tableFunctions.addNewRow,
+                                  tooltip: 'إضافة صف جديد',
+                                  child: const Icon(Icons.add),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -411,7 +531,7 @@ class _ComplexDrawerState extends State<ComplexDrawer>
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -458,7 +578,7 @@ class _ComplexDrawerState extends State<ComplexDrawer>
             const SizedBox(width: 16),
             Expanded(
               child: Text(
-                "FlutterShip",
+                "KACHI",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -492,7 +612,8 @@ class _ComplexDrawerState extends State<ComplexDrawer>
                 height: 30,
                 child: Icon(
                   item.icon,
-                  color: item.iconColor?.withOpacity(0.9),
+                  // ignore: deprecated_member_use
+                  color: item.iconColor?.withValues(alpha: 0.9),
                   size: 20,
                 ),
               ),
@@ -510,7 +631,7 @@ class _ComplexDrawerState extends State<ComplexDrawer>
                 setState(() => selectedIndex = isSelected ? -1 : index);
               },
               selected: isSelected,
-              selectedTileColor: item.iconColor?.withOpacity(0.15),
+              selectedTileColor: item.iconColor?.withValues(alpha: 0.15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -534,7 +655,7 @@ class _ComplexDrawerState extends State<ComplexDrawer>
         width: 20, // Fixed width for leading icon
         child: Icon(
           subMenu.icon,
-          color: color?.withOpacity(0.8) ?? Colors.white60,
+          color: color?.withValues(alpha: 0.8) ?? Colors.white60,
           size: 20,
         ),
       ),
@@ -542,14 +663,14 @@ class _ComplexDrawerState extends State<ComplexDrawer>
         subMenu.title,
         style: TextStyle(
           fontSize: 14,
-          color: color?.withOpacity(0.8) ?? Colors.white60,
+          color: color?.withValues(alpha: 0.8) ?? Colors.white60,
         ),
       ),
       onTap: () {},
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      hoverColor: color?.withOpacity(0.05),
+      hoverColor: color?.withValues(alpha: 0.05),
       dense: true, // Make the ListTile more compact
       visualDensity: VisualDensity.compact,
     );
