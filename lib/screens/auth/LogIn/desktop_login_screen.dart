@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../functions/auth_functions.dart';
@@ -40,9 +39,11 @@ class DesktopLoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  FunctionsAuth.buildFormField('البريد الإلكتروني', 'admin@gmail.com'),
+                  FunctionsAuth.buildFormField(
+                      'البريد الإلكتروني', 'admin@gmail.com'),
                   const SizedBox(height: 16),
-                  FunctionsAuth.buildFormField('كلمة المرور', 'أدخل كلمة المرور',
+                  FunctionsAuth.buildFormField(
+                      'كلمة المرور', 'أدخل كلمة المرور',
                       isPassword: true),
                   const SizedBox(height: 16),
                   Align(
@@ -174,7 +175,8 @@ class DesktopLoginScreen extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           // إجراء عند النقر على "سجل هنا"
-                          Navigator.pushReplacementNamed(context, AppRoutes.register);
+                          Navigator.pushReplacementNamed(
+                              context, AppRoutes.signUp);
                         },
                         child: const Text(
                           'سجل هنا',

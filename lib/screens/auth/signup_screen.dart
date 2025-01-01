@@ -99,7 +99,7 @@ class _MobileSignUpScreenState extends State<MobileSignUpScreen> {
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 32),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8, // تحديد العرض
                   child: Column(
                     children: [
@@ -221,7 +221,7 @@ class _DesktopSignUpScreenState extends State<DesktopSignUpScreen> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      Container(
+                      SizedBox(
                         width: 500, // تحديد العرض
                         child: Column(
                           children: [

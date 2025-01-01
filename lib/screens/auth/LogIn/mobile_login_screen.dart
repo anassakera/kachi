@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../functions/auth_functions.dart';
@@ -50,7 +49,8 @@ class _MobileLoginScreenState extends State<MobileLoginScreen> {
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 32),
-            FunctionsAuth.buildFormField('البريد الإلكتروني', 'admin@gmail.com'),
+            FunctionsAuth.buildFormField(
+                'البريد الإلكتروني', 'admin@gmail.com'),
             const SizedBox(height: 16),
             FunctionsAuth.buildFormField('كلمة المرور', 'أدخل كلمة المرور',
                 isPassword: true),
@@ -186,7 +186,7 @@ class _MobileLoginScreenState extends State<MobileLoginScreen> {
                   onPressed: () {
                     // إجراء عند النقر على "سجل هنا"
 
-                    Navigator.pushReplacementNamed(context, AppRoutes.register);
+                    Navigator.pushReplacementNamed(context, AppRoutes.signUp);
                   },
                   child: const Text(
                     'سجل هنا',
