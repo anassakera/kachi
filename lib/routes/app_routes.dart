@@ -8,6 +8,7 @@ import '../screens/checks/add_check_screen.dart';
 import '../screens/reports/reports_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/user_management_screen.dart';
+import '../screens/test/testone.dart';
 
 class AppRoutes {
   // static const String login = '/login';
@@ -20,6 +21,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String userManagement = '/settings/users';
   static const String loginScreen = '/auth';
+  static const String test = '/test';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -32,6 +34,7 @@ class AppRoutes {
       settings: (context) => const SettingsScreen(),
       userManagement: (context) => const UserManagementScreen(),
       loginScreen: (context) => const LoginScreen(),
+      test: (context) => const EditableTableScreen(),
     };
   }
 }

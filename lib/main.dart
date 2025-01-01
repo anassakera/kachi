@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: Constants.supportedLanguages.map(
         (lang) => Locale(lang),
       ),
-      initialRoute: AppRoutes.loginScreen,
+      initialRoute: AppRoutes.test,
       routes: AppRoutes.getRoutes(),
     );
   }

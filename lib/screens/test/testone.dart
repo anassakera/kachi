@@ -50,11 +50,10 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildMobileField(
-                  'اسم المنتج', index, 'name', TextInputType.text),
-              _buildMobileField(
-                  'الكمية', index, 'quantity', TextInputType.number),
+              _buildMobileField('اسم المنتج', index, 'name', TextInputType.text),
+              _buildMobileField('الكمية', index, 'quantity', TextInputType.number),
               _buildMobileField('السعر', index, 'price', TextInputType.number),
+
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
@@ -250,160 +249,131 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
     final isMobile = _isMobileView(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('جدول المنتجات'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _addNewRow,
-            tooltip: 'إضافة صف جديد',
-          ),
-        ],
-      ),
+      
       body: Column(
         children: [
           Expanded(
-            child: Card(
-              margin: const EdgeInsets.all(16),
-              child: isMobile
-                  ? ListView.builder(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: _data.length,
-                      itemBuilder: (context, index) {
-                        return _buildTableRow(index, _data[index], true);
-                      },
-                    )
-                  : SingleChildScrollView(
-                      controller: _verticalScrollController,
-                      child: SingleChildScrollView(
-                        controller: _horizontalScrollController,
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Table(
-                            border: TableBorder.all(
-                              color: Colors.grey.shade300,
-                              width: 1,
+            child: isMobile
+                ? ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: _data.length,
+                    itemBuilder: (context, index) {
+                      return _buildTableRow(index, _data[index], true);
+                    },
+                  )
+                : SingleChildScrollView(
+                    controller: _verticalScrollController,
+                    child: SingleChildScrollView(
+                      controller: _horizontalScrollController,
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Table(
+                          border: TableBorder.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
+                          columnWidths: const {
+                            0: FixedColumnWidth(200), // name
+                            1: FixedColumnWidth(100), // quantity
+                            2: FixedColumnWidth(100), // price
+                            3: FixedColumnWidth(100), // total
+                            4: FixedColumnWidth(80), // actions
+                          },
+                          children: [
+                            const TableRow(
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF5F5F5),
+                              ),
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    'اسم المنتج',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    'الكمية',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    'السعر',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    'المجموع',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    'الإجراءات',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
                             ),
-                            columnWidths: const {
-                              0: FixedColumnWidth(200), // name
-                              1: FixedColumnWidth(100), // quantity
-                              2: FixedColumnWidth(100), // price
-                              3: FixedColumnWidth(100), // total
-                              4: FixedColumnWidth(80), // actions
-                            },
-                            children: [
-                              const TableRow(
+                            ..._data.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final item = entry.value;
+                              return TableRow(
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFF5F5F5),
+                                  color: index % 2 == 0
+                                      ? Colors.white
+                                      : Colors.grey.shade50,
                                 ),
                                 children: [
+                                  _buildEditableCell(index, 'name', TextInputType.text),
+                                  _buildEditableCell(index, 'quantity', TextInputType.number),
+                                  _buildEditableCell(index, 'price', TextInputType.number),
+                                  _buildEditableCell(index, 'HELLO', TextInputType.number),
                                   Padding(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     child: Text(
-                                      'اسم المنتج',
-                                      style: TextStyle(
+                                      item['total'].toString(),
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(
-                                      'الكمية',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(
-                                      'السعر',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(
-                                      'المجموع',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(
-                                      'الإجراءات',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
+                                  Center(
+                                    child: IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.red),
+                                      onPressed: () => _removeRow(index),
                                     ),
                                   ),
                                 ],
-                              ),
-                              ..._data.asMap().entries.map((entry) {
-                                final index = entry.key;
-                                final item = entry.value;
-                                return TableRow(
-                                  decoration: BoxDecoration(
-                                    color: index % 2 == 0
-                                        ? Colors.white
-                                        : Colors.grey.shade50,
-                                  ),
-                                  children: [
-                                    _buildEditableCell(
-                                        index, 'name', TextInputType.text),
-                                    _buildEditableCell(index, 'quantity',
-                                        TextInputType.number),
-                                    _buildEditableCell(
-                                        index, 'price', TextInputType.number),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(
-                                        item['total'].toString(),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Center(
-                                      child: IconButton(
-                                        icon: const Icon(Icons.delete,
-                                            color: Colors.red),
-                                        onPressed: () => _removeRow(index),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                            ],
-                          ),
+                              );
+                            }),
+                          ],
                         ),
                       ),
                     ),
-            ),
-          ),
-          if (_data.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.all(16),
-              color: Colors.grey.shade100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'المجموع الكلي: ${_calculateTotal()}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
                   ),
-                ],
-              ),
-            ),
+          ),
+          // if (_data.isNotEmpty)
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -414,11 +384,6 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
     );
   }
 
-  String _calculateTotal() {
-    final total = _data.fold(0.0,
-        (sum, item) => sum + (double.tryParse(item['total'].toString()) ?? 0));
-    return total.toStringAsFixed(2);
-  }
 
   @override
   void dispose() {
