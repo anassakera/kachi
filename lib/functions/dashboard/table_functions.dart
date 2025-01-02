@@ -124,4 +124,24 @@ class TableFunctions {
       ),
     );
   }
+
+  void addNewRowWithData(Map<String, dynamic> newRow) {
+    insertNewRow(newRow);
+    setState(() {
+      final newRowIndex = data.length - 1;
+      for (var field in [
+        'Date',
+        'Échéance',
+        'Tireur',
+        'Client',
+        'N',
+        'BQ',
+        'Montant',
+        'Type'
+      ]) {
+        final key = '${newRowIndex}_$field';
+        focusNodes[key] = FocusNode();
+      }
+    });
+  }
 }

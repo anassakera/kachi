@@ -1,0 +1,7 @@
+date picker
+
+client is dropdown list plus CRUD(BQ - Client)
+
+montant is double 00 dont permit String
+
+
