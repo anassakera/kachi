@@ -1,5 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+
+class DateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Only allow digits
+    final newText = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
+
+    if (newText.length > 8) {
+      return oldValue;
+    }
+
+    final buffer = StringBuffer();
+
+    // Add day
+    if (newText.isNotEmpty) {
+      buffer
+          .write(newText.substring(0, newText.length > 2 ? 2 : newText.length));
+      if (newText.length > 2) buffer.write('/');
+    }
+
+    // Add month
+    if (newText.length > 2) {
+      buffer
+          .write(newText.substring(2, newText.length > 4 ? 4 : newText.length));
+      if (newText.length > 4) buffer.write('/');
+    }
+
+    // Add year
+    if (newText.length > 4) {
+      buffer.write(newText.substring(4));
+    }
+
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
+    );
+  }
+}
+
+bool isValidDate(String input) {
+  try {
+    if (input.length != 10) return false;
+    final parts = input.split('/');
+    if (parts.length != 3) return false;
+
+    final day = int.parse(parts[0]);
+    final month = int.parse(parts[1]);
+    final year = int.parse(parts[2]);
+
+    // Additional validation for day and month
+    if (month < 1 || month > 12) return false;
+    if (day < 1) return false;
+
+    // Check days in month
+    final daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    // Adjust February for leap year
+    if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
+      daysInMonth[1] = 29;
+    }
+
+    if (day > daysInMonth[month - 1]) return false;
+    if (year < DateTime.now().year) return false;
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 
 class TableWidgets {
   final List<Map<String, dynamic>> data;
@@ -40,6 +112,43 @@ class TableWidgets {
           ),
         ),
         onChanged: onChanged,
+      ),
+    );
+  }
+
+  static Widget buildDateField({
+    required TextEditingController controller,
+    required String labelText,
+    required Function(bool) onValidityChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: 'DD/MM/YYYY',
+          errorStyle: const TextStyle(color: Colors.red),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        inputFormatters: [
+          DateInputFormatter(),
+        ],
+        onChanged: (value) {
+          final isValid = value.length == 10 && isValidDate(value);
+          onValidityChanged(isValid);
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Date is required';
+          }
+          if (!isValidDate(value)) {
+            return 'Invalid date format';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -122,7 +231,7 @@ class TableWidgets {
             Expanded(child: Text(item['Tireur'].toString())),
             Expanded(child: Text(item['Client'].toString())),
             Expanded(child: Text(item['N'].toString())),
-            Expanded(child: Text(item['BQ'].toString())),
+            Expanded(child: Text(item['Banque '].toString())),
             Expanded(child: Text(item['Montant'].toString())),
             Expanded(child: Text(item['Type'].toString())),
             SizedBox(
@@ -166,12 +275,16 @@ class TableWidgets {
   static Widget customTextField({
     required TextEditingController controller,
     required String labelText,
+    String? hintText, // إضافة معامل جديد للنص التوضيحي
   }) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(labelText: labelText),
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+        ),
       ),
     );
   }
@@ -186,7 +299,13 @@ class DesktopTable extends StatefulWidget {
 
 class DesktopTableState extends State<DesktopTable> {
   // Add constant for valid type options
-  static const List<String> typeOptions = ['شيك', 'كمبيالا', 'effet'];
+  static const List<String> typeOptions = [
+    'CHEQUE',
+    'EFFET',
+    'VIREMENT',
+    'VERSEMENT',
+    'AUTRES'
+  ];
 
   List<TextEditingController> controllers =
       List.generate(8, (_) => TextEditingController());
@@ -199,6 +318,53 @@ class DesktopTableState extends State<DesktopTable> {
   // Add new state variables
   bool hasUnsavedChanges = false;
   bool isSaving = false;
+
+  // Add new state variable
+  bool isEcheanceValid = false;
+
+  // Add validators
+  bool validateFields() {
+    if (!isEcheanceValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid date for Echeance'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    // Required fields
+    if (controllers[1].text.isEmpty || // Echeance
+        controllers[2].text.isEmpty || // Tireur
+        controllers[3].text.isEmpty || // Client
+        controllers[6].text.isEmpty) {
+      // Montant
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('جميع الحقول مطلوبة: الاستحقاق، الساحب، العميل، والمبلغ'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    // Validate Montant
+    try {
+      double.parse(controllers[6].text.replaceAll(',', '.'));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('المبلغ يجب أن يكون رقماً صحيحاً أو عشرياً'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    return true;
+  }
 
   // Add method to handle save operation
   Future<void> handleSave() async {
@@ -217,43 +383,30 @@ class DesktopTableState extends State<DesktopTable> {
 
   // Modify addRow to set hasUnsavedChanges
   void addRow() {
-    bool hasValues =
-        controllers.any((controller) => controller.text.isNotEmpty);
-
-    if (!hasValues) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill at least one field')),
-      );
-      return;
-    }
-
-    // Validate type value
-    String typeValue =
-        controllers[7].text.isEmpty ? 'Type A' : controllers[7].text;
-    if (!typeOptions.contains(typeValue)) {
-      typeValue = 'Type A'; // Default to Type A if invalid value
-    }
+    if (!validateFields()) return;
 
     setState(() {
+      String montantValue = controllers[6].text.replaceAll(',', '.');
+      double montantDouble = double.parse(montantValue);
+
       controllers[0].text =
-          "${DateFormat('HH:mm').format(DateTime.now())} \n ${DateFormat('yyyy-MM-dd').format(DateTime.now())}";
+          "${DateFormat('HH:mm').format(DateTime.now())} \n ${DateFormat('yyyy/MM/dd').format(DateTime.now())}";
       sampleData.add({
-        'date': controllers[0].text,
-        'echeance': controllers[1].text,
-        'tireur': controllers[2].text,
-        'client': controllers[3].text,
-        'n': controllers[4].text,
-        'bq': controllers[5].text,
-        'montant': controllers[6].text,
-        'type': typeValue,
+        'Date': controllers[0].text,
+        'Echeance': controllers[1].text,
+        'Tireur': controllers[2].text,
+        'Client': controllers[3].text,
+        'N°': controllers[4].text,
+        'Banque': controllers[5].text,
+        'Montant': montantDouble.toStringAsFixed(2),
+        'Type':
+            controllers[7].text.isEmpty ? typeOptions[0] : controllers[7].text,
       });
 
       // Clear all controllers
       for (var controller in controllers) {
         controller.clear();
       }
-
-      // Set unsaved changes flag
       hasUnsavedChanges = true;
     });
   }
@@ -302,14 +455,14 @@ class DesktopTableState extends State<DesktopTable> {
   }
 
   List<String> headersOfTheTable = [
-    'date',
-    'echeance',
-    'tireur',
-    'client',
+    'Date',
+    'Echeance',
+    'Tireur',
+    'Client',
     'N°',
-    'banque ',
-    'montant',
-    'type',
+    'Banque ',
+    'Montant',
+    'Type',
   ];
 
   @override
@@ -368,15 +521,28 @@ class DesktopTableState extends State<DesktopTable> {
                     ),
                   ),
                   for (int i = 1; i < 8; i++)
-                    TableWidgets.customTextField(
-                      controller: controllers[i],
-                      labelText: headersOfTheTable[i], // Fixed syntax here
-                    ),
+                    i == 1
+                        ? TableWidgets.buildDateField(
+                            controller: controllers[i],
+                            labelText: headersOfTheTable[i],
+                            onValidityChanged: (isValid) {
+                              setState(() {
+                                isEcheanceValid = isValid;
+                              });
+                            },
+                          )
+                        : TableWidgets.customTextField(
+                            controller: controllers[i],
+                            labelText:
+                                headersOfTheTable[i], // Fixed syntax here
+                          ),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: ElevatedButton(
                       onPressed: addRow,
-                      child: const Text('إضافة'),
+                      child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(color: Colors.white, Icons.add)),
                     ),
                   ),
                 ],
@@ -390,8 +556,8 @@ class DesktopTableState extends State<DesktopTable> {
                   TableWidgets.customHeaderText(text: 'Échéance'),
                   TableWidgets.customHeaderText(text: 'Tireur'),
                   TableWidgets.customHeaderText(text: 'Client'),
-                  TableWidgets.customHeaderText(text: 'N'),
-                  TableWidgets.customHeaderText(text: 'BQ'),
+                  TableWidgets.customHeaderText(text: 'N°'),
+                  TableWidgets.customHeaderText(text: 'Banque'),
                   TableWidgets.customHeaderText(text: 'Montant'),
                   TableWidgets.customHeaderText(text: 'Type'),
                   TableWidgets.customHeaderText(text: 'الإجراءات'),
@@ -410,17 +576,17 @@ class DesktopTableState extends State<DesktopTable> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        item['date'],
+                        item['Date']?.toString() ?? '',
                         textAlign: TextAlign.center,
                       ),
                     ),
                     for (String key in [
-                      'echeance',
-                      'tireur',
-                      'client',
-                      'n',
-                      'bq',
-                      'montant'
+                      'Echeance',
+                      'Tireur',
+                      'Client',
+                      'N°',
+                      'Banque',
+                      'Montant'
                     ])
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -518,6 +684,53 @@ class PhoneTableState extends State<PhoneTable> {
   bool hasUnsavedChanges = false;
   bool isSaving = false;
 
+  // Add new state variable
+  bool isEcheanceValid = false;
+
+  // Add validators
+  bool validateFields() {
+    // Required fields validation
+    if (!isEcheanceValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid date for Echeance'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    if (controllers[1].text.isEmpty || // Echeance
+        controllers[2].text.isEmpty || // Tireur
+        controllers[3].text.isEmpty || // Client
+        controllers[6].text.isEmpty) {
+      // Montant
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('جميع الحقول مطلوبة: الاستحقاق، الساحب، العميل، والمبلغ'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    // Montant validation
+    try {
+      double.parse(controllers[6].text.replaceAll(',', '.'));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('المبلغ يجب أن يكون رقماً صحيحاً أو عشرياً'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    return true;
+  }
+
   Future<void> handleSave() async {
     setState(() {
       isSaving = true;
@@ -529,17 +742,16 @@ class PhoneTableState extends State<PhoneTable> {
     });
   }
 
+  // Modify addRow to include validation
   void addRow() {
-    if (!controllers.any((controller) => controller.text.isNotEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى ملء حقل واحد على الأقل')),
-      );
-      return;
-    }
+    if (!validateFields()) return;
 
     setState(() {
+      String montantValue = controllers[6].text.replaceAll(',', '.');
+      double montantDouble = double.parse(montantValue);
+
       controllers[0].text =
-          "${DateFormat('HH:mm').format(DateTime.now())} \n ${DateFormat('yyyy-MM-dd').format(DateTime.now())}";
+          "${DateFormat('HH:mm').format(DateTime.now())} \n ${DateFormat('YYYY/MM/DD').format(DateTime.now())}";
       sampleData.add({
         'date': controllers[0].text,
         'echeance': controllers[1].text,
@@ -547,8 +759,9 @@ class PhoneTableState extends State<PhoneTable> {
         'client': controllers[3].text,
         'n': controllers[4].text,
         'bq': controllers[5].text,
-        'montant': controllers[6].text,
-        'type': controllers[7].text.isEmpty ? 'Type A' : controllers[7].text,
+        'montant': montantDouble.toStringAsFixed(2),
+        'type':
+            controllers[7].text.isEmpty ? typeOptions[0] : controllers[7].text,
       });
 
       for (var controller in controllers) {
@@ -571,25 +784,38 @@ class PhoneTableState extends State<PhoneTable> {
               child: Column(
                 children: [
                   for (int i = 1; i < controllers.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: TextField(
-                        controller: controllers[i],
-                        decoration: InputDecoration(
-                          labelText: [
-                            'التاريخ',
-                            'الاستحقاق',
-                            'الساحب',
-                            'العميل',
-                            'الرقم',
-                            'البنك',
-                            'المبلغ',
-                            'النوع'
-                          ][i],
-                          border: const OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
+                    i == 1
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: TableWidgets.buildDateField(
+                              controller: controllers[i],
+                              labelText: 'Echeance',
+                              onValidityChanged: (isValid) {
+                                setState(() {
+                                  isEcheanceValid = isValid;
+                                });
+                              },
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: TextField(
+                              controller: controllers[i],
+                              decoration: InputDecoration(
+                                labelText: [
+                                  'Date',
+                                  'Echeance',
+                                  'Tireur',
+                                  'Client',
+                                  'N°',
+                                  'Banque ',
+                                  'Montant',
+                                  'Type'
+                                ][i],
+                                border: const OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
                   Row(
                     children: [
                       Expanded(

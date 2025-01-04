@@ -455,7 +455,7 @@ Widget _buildLoginLink(BuildContext context) {
       ),
       TextButton(
         onPressed: () {
-          Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
+          Navigator.pushReplacementNamed(context, AppRoutes.auth);
         },
         child: const Text(
           'سجل الدخول',

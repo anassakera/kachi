@@ -176,7 +176,7 @@ class DesktopLoginScreen extends StatelessWidget {
                         onPressed: () {
                           // إجراء عند النقر على "سجل هنا"
                           Navigator.pushReplacementNamed(
-                              context, AppRoutes.signUp);
+                              context, AppRoutes.register);
                         },
                         child: const Text(
                           'سجل هنا',

@@ -221,7 +221,7 @@ class _MobileLoginScreenState extends State<MobileLoginScreen> {
                 TextButton(
                   onPressed: () {
                     // إجراء عند النقر على "سجل هنا"
-                    Navigator.pushReplacementNamed(context, AppRoutes.signUp);
+                    Navigator.pushReplacementNamed(context, AppRoutes.register);
                   },
                   child: const Text(
                     'سجل هنا',
@@ -411,7 +411,7 @@ class DesktopLoginScreen extends StatelessWidget {
                         onPressed: () {
                           // إجراء عند النقر على "سجل هنا"
                           Navigator.pushReplacementNamed(
-                              context, AppRoutes.signUp);
+                              context, AppRoutes.register);
                         },
                         child: const Text(
                           'سجل هنا',

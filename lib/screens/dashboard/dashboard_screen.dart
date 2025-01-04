@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../functions/dashboard/table_functions.dart';
+import '../../widgets/dashboard/crud_as_a_card_widget.dart';
 import '../../widgets/dashboard/table_widgets.dart';
 import 'complex_drawer.dart';
 
@@ -12,77 +13,15 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final List<Map<String, dynamic>> _data = [
-    {
-      'Date': DateTime.now(),
-      'Échéance': '',
-      'Tireur': '',
-      'Client': '',
-      'N': '',
-      'BQ': '',
-      'Montant': '',
-      'Type': 'Check',
-    },
-    {
-      'Date': DateTime.now(),
-      'Échéance': '',
-      'Tireur': '',
-      'Client': '',
-      'N': '',
-      'BQ': '',
-      'Montant': '',
-      'Type': 'Effet',
-    },
-  ];
-
   final Map<String, FocusNode> _focusNodes = {};
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
   late TableFunctions tableFunctions;
   late TableWidgets tableWidgets;
-  List<Map<String, dynamic>> sampleData = [
-    {
-      'date': '01/01/2025',
-      'echeance': '05/01/2025',
-      'tireur': 'John Doe',
-      'client': 'Client A',
-      'n': '123',
-      'bq': 'Bank XYZ',
-      'montant': '1000 MAD',
-      'type': 'Credit',
-    },
-    {
-      'date': '02/01/2025',
-      'echeance': '06/01/2025',
-      'tireur': 'Jane Doe',
-      'client': 'Client B',
-      'n': '124',
-      'bq': 'Bank ABC',
-      'montant': '2000 MAD',
-      'type': 'Debit',
-    },
-  ];
 
   @override
   void initState() {
     super.initState();
-    tableFunctions = TableFunctions(
-      data: _data,
-      focusNodes: _focusNodes,
-      setState: setState,
-      context: context,
-      insertNewRow: (Map<String, dynamic> newRow) {
-        _data.insert(0, newRow);
-      },
-    );
-    tableWidgets = TableWidgets(
-      data: _data,
-      focusNodes: _focusNodes,
-      onFieldSubmission: tableFunctions.handleFieldSubmission,
-      onRemoveRow: tableFunctions.removeRow,
-      updateValue: tableFunctions.updateValue,
-    );
-    tableFunctions.initializeFocusNodes();
   }
 
   @override
@@ -114,6 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         return const PhoneTable();
                       } else {
                         return const DesktopTable();
+                        // return const DataManagement();
                       }
                     },
                   )),
@@ -131,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   PreferredSizeWidget _buildResponsiveAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: const Color(0xFF1a1c1e),
+      // backgroundColor: const Color(0xFF1a1c1e),
       iconTheme: Theme.of(context).iconTheme.copyWith(
             color: Colors.white,
             size: 28,

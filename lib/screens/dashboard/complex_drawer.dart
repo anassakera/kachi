@@ -14,282 +14,331 @@ class _ComplexDrawerState extends State<ComplexDrawer>
   int selectedIndex = -1;
   bool isExpanded = true;
   late AnimationController _controller;
-  static final List<DrawerMenuItem> menuItems = [
-    const DrawerMenuItem(
-      icon: Icons.admin_panel_settings_rounded,
-      title: "المدير",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "إدارة المستخدمين",
-          icon: Icons.manage_accounts_rounded,
-          iconColor: Color(0xFF64B5F6),
-        ),
-        DrawerSubMenuItem(
-          title: "الصلاحيات والأذونات",
-          icon: Icons.security_rounded,
-          iconColor: Color(0xFF81C784),
-        ),
-        DrawerSubMenuItem(
-          title: "سجل النشاطات",
-          icon: Icons.history_rounded,
-          iconColor: Color(0xFFFFB74D),
-        ),
-      ],
-      iconColor: Color(0xFF42A5F5),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.book_rounded,
-      title: "الدفاتر",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "دفاتر الشيكات النشطة",
-          icon: Icons.book_online_rounded,
-          iconColor: Color(0xFFBA68C8),
-        ),
-        DrawerSubMenuItem(
-          title: "طلب دفتر شيكات جديد",
-          icon: Icons.add_box_rounded,
-          iconColor: Color(0xFF4FC3F7),
-        ),
-        DrawerSubMenuItem(
-          title: "سجل الدفاتر السابقة",
-          icon: Icons.history_edu_rounded,
-          iconColor: Color(0xFF4DB6AC),
-        ),
-      ],
-      iconColor: Color(0xFF7E57C2),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.add_circle_outline_rounded,
-      title: "جديد",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "إصدار شيك جديد",
-          icon: Icons.create_rounded,
-          iconColor: Color(0xFF7986CB),
-        ),
-        DrawerSubMenuItem(
-          title: "إنشاء سند دفع",
-          icon: Icons.receipt_long_rounded,
-          iconColor: Color(0xFF9575CD),
-        ),
-        DrawerSubMenuItem(
-          title: "تسجيل معاملة جديدة",
-          icon: Icons.add_task_rounded,
-          iconColor: Color(0xFF4DD0E1),
-        ),
-      ],
-      iconColor: Color(0xFFFFB74D),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.check_circle_outline_rounded,
-      title: "الشيكات المصدرة",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "عرض جميع الشيكات المصدرة",
-          icon: Icons.view_list_rounded,
-          iconColor: Color(0xFFFFD54F),
-        ),
-        DrawerSubMenuItem(
-          title: "تصنيف حسب التاريخ",
-          icon: Icons.date_range_rounded,
-          iconColor: Color(0xFFA1887F),
-        ),
-        DrawerSubMenuItem(
-          title: "متابعة حالة الصرف",
-          icon: Icons.track_changes_rounded,
-          iconColor: Color(0xFFF06292),
-        ),
-      ],
-      iconColor: Color(0xFF81C784),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.send_rounded,
-      title: "تسليم الشيكات",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "تسجيل عملية تسليم",
-          icon: Icons.delivery_dining_rounded,
-          iconColor: Color(0xFF4FC3F7),
-        ),
-        DrawerSubMenuItem(
-          title: "سجل التسليمات",
-          icon: Icons.history_rounded,
-          iconColor: Color(0xFFFF8A65),
-        ),
-        DrawerSubMenuItem(
-          title: "تقرير التسليمات الشهري",
-          icon: Icons.report_rounded,
-          iconColor: Color(0xFFAED581),
-        ),
-      ],
-      iconColor: Color(0xFFEF5350),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.download_rounded,
-      title: "الشيكات المستلمة",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "تسجيل شيك مستلم",
-          icon: Icons.receipt_rounded,
-          iconColor: Color(0xFF64B5F6),
-        ),
-        DrawerSubMenuItem(
-          title: "متابعة حالة الإيداع",
-          icon: Icons.track_changes_rounded,
-          iconColor: Color(0xFF4DB6AC),
-        ),
-        DrawerSubMenuItem(
-          title: "سجل الشيكات المستلمة",
-          icon: Icons.history_rounded,
-          iconColor: Color(0xFFBA68C8),
-        ),
-      ],
-      iconColor: Color(0xFF26A69A),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.business_rounded,
-      title: "الشركات",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "إدارة الشركات",
-          icon: Icons.business_center_rounded,
-          iconColor: Color(0xFF7986CB),
-        ),
-        DrawerSubMenuItem(
-          title: "البيانات الضريبية",
-          icon: Icons.receipt_long_rounded,
-          iconColor: Color(0xFFEF5350),
-        ),
-        DrawerSubMenuItem(
-          title: "معلومات التواصل",
-          icon: Icons.contact_phone_rounded,
-          iconColor: Color(0xFF81C784),
-        ),
-      ],
-      iconColor: Color(0xFF8D6E63),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.account_balance_rounded,
-      title: "الحسابات البنكية",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "عرض الحسابات النشطة",
-          icon: Icons.account_balance_wallet_rounded,
-          iconColor: Color(0xFFFFD54F),
-        ),
-        DrawerSubMenuItem(
-          title: "إضافة حساب جديد",
-          icon: Icons.add_circle_rounded,
-          iconColor: Color(0xFF4DD0E1),
-        ),
-        DrawerSubMenuItem(
-          title: "كشوفات الحسابات",
-          icon: Icons.receipt_long_rounded,
-          iconColor: Color(0xFF9575CD),
-        ),
-      ],
-      iconColor: Color(0xFF78909C),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.people_rounded,
-      title: "المستفيدون",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "قائمة المستفيدين",
-          icon: Icons.list_rounded,
-          iconColor: Color(0xFFFFB74D),
-        ),
-        DrawerSubMenuItem(
-          title: "إضافة مستفيد جديد",
-          icon: Icons.person_add_rounded,
-          iconColor: Color(0xFF4FC3F7),
-        ),
-        DrawerSubMenuItem(
-          title: "سجل التعاملات",
-          icon: Icons.history_rounded,
-          iconColor: Color(0xFFF06292),
-        ),
-      ],
-      iconColor: Color(0xFF7E57C2),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.account_balance_wallet_rounded,
-      title: "البنوك",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "قائمة البنوك المعتمدة",
-          icon: Icons.list_rounded,
-          iconColor: Color(0xFF64B5F6),
-        ),
-        DrawerSubMenuItem(
-          title: "معلومات الفروع",
-          icon: Icons.location_city_rounded,
-          iconColor: Color(0xFFA1887F),
-        ),
-        DrawerSubMenuItem(
-          title: "بيانات التواصل",
-          icon: Icons.contact_phone_rounded,
-          iconColor: Color(0xFF4DB6AC),
-        ),
-      ],
-      iconColor: Color(0xFF5C6BC0),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.dashboard_customize_rounded,
-      title: "النماذج",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "نماذج الشيكات",
-          icon: Icons.description_rounded,
-          iconColor: Color(0xFFBA68C8),
-        ),
-        DrawerSubMenuItem(
-          title: "تخصيص النماذج",
-          icon: Icons.edit_rounded,
-          iconColor: Color(0xFFFF8A65),
-        ),
-        DrawerSubMenuItem(
-          title: "إعدادات الطباعة",
-          icon: Icons.print_rounded,
-          iconColor: Color(0xFF7986CB),
-        ),
-      ],
-      iconColor: Color(0xFF26C6DA),
-    ),
-    const DrawerMenuItem(
-      icon: Icons.settings_rounded,
-      title: "التفضيلات",
-      submenus: [
-        DrawerSubMenuItem(
-          title: "إعدادات النظام",
-          icon: Icons.settings_rounded,
-          iconColor: Color(0xFF81C784),
-        ),
-        DrawerSubMenuItem(
-          title: "تخصيص الواجهة",
-          icon: Icons.dashboard_customize_rounded,
-          iconColor: Color(0xFFFFD54F),
-        ),
-        DrawerSubMenuItem(
-          title: "خيارات العرض",
-          icon: Icons.view_compact_rounded,
-          iconColor: Color(0xFF64B5F6),
-        ),
-      ],
-      iconColor: Color(0xFF9E9E9E),
-    ),
-  ];
+
+  late final List<DrawerMenuItem> menuItems;
 
   @override
   void initState() {
     super.initState();
+    _initializeMenuItems();
     _controller = AnimationController(
       duration: DrawerConstants.animationDuration,
       vsync: this,
     );
-
     if (isExpanded) _controller.forward();
+  }
+
+  void _initializeMenuItems() {
+    menuItems = [
+      DrawerMenuItem(
+        icon: Icons.add_circle_outline_rounded,
+        title: "جديد",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "إصدار شيك جديد",
+            icon: Icons.create_rounded,
+            iconColor: const Color(0xFF7986CB),
+            onPressed: () {
+              if (mounted) {
+                Navigator.of(context).pushReplacementNamed(AppRoutes.auth);
+              }
+            },
+          ),
+          DrawerSubMenuItem(
+            title: "إنشاء سند دفع",
+            icon: Icons.receipt_long_rounded,
+            iconColor: const Color(0xFF9575CD),
+            onPressed: () {
+              // Navigator.pushNamed(context, '/new-payment');
+            },
+          ),
+          DrawerSubMenuItem(
+            title: "تسجيل معاملة جديدة",
+            icon: Icons.add_task_rounded,
+            iconColor: const Color(0xFF4DD0E1),
+            onPressed: () {
+              // Navigator.pushNamed(context, '/new-transaction');
+            },
+          ),
+        ],
+        iconColor: const Color(0xFFFFB74D),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.admin_panel_settings_rounded,
+        title: "المدير",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "إدارة المستخدمين",
+            icon: Icons.manage_accounts_rounded,
+            iconColor: Color(0xFF64B5F6),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "الصلاحيات والأذونات",
+            icon: Icons.security_rounded,
+            iconColor: Color(0xFF81C784),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "سجل النشاطات",
+            icon: Icons.history_rounded,
+            iconColor: Color(0xFFFFB74D),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF42A5F5),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.book_rounded,
+        title: "الدفاتر",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "دفاتر الشيكات النشطة",
+            icon: Icons.book_online_rounded,
+            iconColor: Color(0xFFBA68C8),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "طلب دفتر شيكات جديد",
+            icon: Icons.add_box_rounded,
+            iconColor: Color(0xFF4FC3F7),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "سجل الدفاتر السابقة",
+            icon: Icons.history_edu_rounded,
+            iconColor: Color(0xFF4DB6AC),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF7E57C2),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.check_circle_outline_rounded,
+        title: "الشيكات المصدرة",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "عرض جميع الشيكات المصدرة",
+            icon: Icons.view_list_rounded,
+            iconColor: Color(0xFFFFD54F),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "تصنيف حسب التاريخ",
+            icon: Icons.date_range_rounded,
+            iconColor: Color(0xFFA1887F),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "متابعة حالة الصرف",
+            icon: Icons.track_changes_rounded,
+            iconColor: Color(0xFFF06292),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF81C784),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.send_rounded,
+        title: "تسليم الشيكات",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "تسجيل عملية تسليم",
+            icon: Icons.delivery_dining_rounded,
+            iconColor: Color(0xFF4FC3F7),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "سجل التسليمات",
+            icon: Icons.history_rounded,
+            iconColor: Color(0xFFFF8A65),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "تقرير التسليمات الشهري",
+            icon: Icons.report_rounded,
+            iconColor: Color(0xFFAED581),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFFEF5350),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.download_rounded,
+        title: "الشيكات المستلمة",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "تسجيل شيك مستلم",
+            icon: Icons.receipt_rounded,
+            iconColor: Color(0xFF64B5F6),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "متابعة حالة الإيداع",
+            icon: Icons.track_changes_rounded,
+            iconColor: Color(0xFF4DB6AC),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "سجل الشيكات المستلمة",
+            icon: Icons.history_rounded,
+            iconColor: Color(0xFFBA68C8),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF26A69A),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.business_rounded,
+        title: "الشركات",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "إدارة الشركات",
+            icon: Icons.business_center_rounded,
+            iconColor: Color(0xFF7986CB),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "البيانات الضريبية",
+            icon: Icons.receipt_long_rounded,
+            iconColor: Color(0xFFEF5350),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "معلومات التواصل",
+            icon: Icons.contact_phone_rounded,
+            iconColor: Color(0xFF81C784),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF8D6E63),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.account_balance_rounded,
+        title: "الحسابات البنكية",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "عرض الحسابات النشطة",
+            icon: Icons.account_balance_wallet_rounded,
+            iconColor: Color(0xFFFFD54F),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "إضافة حساب جديد",
+            icon: Icons.add_circle_rounded,
+            iconColor: Color(0xFF4DD0E1),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "كشوفات الحسابات",
+            icon: Icons.receipt_long_rounded,
+            iconColor: Color(0xFF9575CD),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF78909C),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.people_rounded,
+        title: "المستفيدون",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "قائمة المستفيدين",
+            icon: Icons.list_rounded,
+            iconColor: Color(0xFFFFB74D),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "إضافة مستفيد جديد",
+            icon: Icons.person_add_rounded,
+            iconColor: Color(0xFF4FC3F7),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "سجل التعاملات",
+            icon: Icons.history_rounded,
+            iconColor: Color(0xFFF06292),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF7E57C2),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.account_balance_wallet_rounded,
+        title: "البنوك",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "قائمة البنوك المعتمدة",
+            icon: Icons.list_rounded,
+            iconColor: Color(0xFF64B5F6),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "معلومات الفروع",
+            icon: Icons.location_city_rounded,
+            iconColor: Color(0xFFA1887F),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "بيانات التواصل",
+            icon: Icons.contact_phone_rounded,
+            iconColor: Color(0xFF4DB6AC),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF5C6BC0),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.dashboard_customize_rounded,
+        title: "النماذج",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "نماذج الشيكات",
+            icon: Icons.description_rounded,
+            iconColor: Color(0xFFBA68C8),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "تخصيص النماذج",
+            icon: Icons.edit_rounded,
+            iconColor: Color(0xFFFF8A65),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "إعدادات الطباعة",
+            icon: Icons.print_rounded,
+            iconColor: Color(0xFF7986CB),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF26C6DA),
+      ),
+      const DrawerMenuItem(
+        icon: Icons.settings_rounded,
+        title: "التفضيلات",
+        submenus: [
+          DrawerSubMenuItem(
+            title: "إعدادات النظام",
+            icon: Icons.settings_rounded,
+            iconColor: Color(0xFF81C784),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "تخصيص الواجهة",
+            icon: Icons.dashboard_customize_rounded,
+            iconColor: Color(0xFFFFD54F),
+            onPressed: null, // Add callback here
+          ),
+          DrawerSubMenuItem(
+            title: "خيارات العرض",
+            icon: Icons.view_compact_rounded,
+            iconColor: Color(0xFF64B5F6),
+            onPressed: null, // Add callback here
+          ),
+        ],
+        iconColor: Color(0xFF9E9E9E),
+      ),
+    ];
   }
 
   @override
@@ -444,7 +493,7 @@ class _ComplexDrawerState extends State<ComplexDrawer>
           color: color?.withValues(alpha: 0.8) ?? Colors.white60,
         ),
       ),
-      onTap: () {},
+      onTap: subMenu.onPressed,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -507,7 +556,7 @@ class _ComplexDrawerState extends State<ComplexDrawer>
                 color: Colors.white70,
               ),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
+                Navigator.pushReplacementNamed(context, AppRoutes.auth);
               },
               tooltip: 'Logout',
             ),
@@ -547,11 +596,13 @@ class DrawerSubMenuItem {
   final String title;
   final IconData icon;
   final Color? iconColor;
+  final VoidCallback? onPressed;
 
   const DrawerSubMenuItem({
     required this.title,
     required this.icon,
     this.iconColor,
+    this.onPressed,
   });
 }
 
