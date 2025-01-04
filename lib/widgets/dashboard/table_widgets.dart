@@ -73,6 +73,14 @@ bool isValidDate(String input) {
   }
 }
 
+class DesktopTableWidgets {
+  // ...existing desktop table widget methods...
+}
+
+class PhoneTableWidgets {
+  // ...existing phone table widget methods...
+}
+
 class TableWidgets {
   final List<Map<String, dynamic>> data;
   final Map<String, FocusNode> focusNodes;
@@ -249,18 +257,6 @@ class TableWidgets {
     }
   }
 
-  List<Map<String, dynamic>> sampleData = [
-    {
-      'date': '02/01/2025',
-      'echeance': '06/01/2025',
-      'tireur': 'Jane Doe',
-      'client': 'Client B',
-      'n': '124',
-      'bq': 'Bank ABC',
-      'montant': '2000 MAD',
-    },
-  ]; // قائمة البيانات فارغة
-
   static Widget customHeaderText({required String text}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -286,6 +282,197 @@ class TableWidgets {
           hintText: hintText,
         ),
       ),
+    );
+  }
+
+  // إضافة ثوابت للتجاوب
+  static const double _mobileBreakpoint = 480.0;
+  static const double _tabletBreakpoint = 768.0;
+
+  Widget buildResponsiveTable(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    
+    if (width < _mobileBreakpoint) {
+      return _buildMobileTable();
+    } else if (width < _tabletBreakpoint) {
+      return _buildTabletTable();
+    } else {
+      return _buildDesktopTable();
+    }
+  }
+
+  Widget _buildMobileTable() {
+    return ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: ExpansionTile(
+            title: Text('Check #${data[index]['N'] ?? ''}'),
+            subtitle: Text('${data[index]['Client'] ?? ''}'),
+            children: [
+              _buildMobileRowDetails(data[index]),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMobileRowDetails(Map<String, dynamic> rowData) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDetailRow('Date', rowData['Date']),
+          _buildDetailRow('Échéance', rowData['Échéance']),
+          _buildDetailRow('Tireur', rowData['Tireur']),
+          _buildDetailRow('Montant', rowData['Montant']),
+          _buildDetailRow('Type', rowData['Type']),
+          _buildDetailRow('BQ', rowData['BQ']),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => onRemoveRow(data.indexOf(rowData)), // Fixed: Pass index instead of Map
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                color: Colors.red,
+                onPressed: () => onRemoveRow(data.indexOf(rowData)), // Fixed: Pass index instead of Map
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value?.toString() ?? '',
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabletTable() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columnSpacing: 20,
+        columns: _buildTableColumns(),
+        rows: _buildTableRows(isCompact: true),
+      ),
+    );
+  }
+
+  Widget _buildDesktopTable() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columnSpacing: 30,
+        columns: _buildTableColumns(),
+        rows: _buildTableRows(isCompact: false),
+      ),
+    );
+  }
+
+  List<DataColumn> _buildTableColumns() {
+    return [
+      _buildDataColumn('Date'),
+      _buildDataColumn('Échéance'),
+      _buildDataColumn('Tireur'),
+      _buildDataColumn('Client'),
+      _buildDataColumn('N'),
+      _buildDataColumn('BQ'),
+      _buildDataColumn('Montant'),
+      _buildDataColumn('Type'),
+      const DataColumn(label: Text('Actions')),
+    ];
+  }
+
+  DataColumn _buildDataColumn(String label) {
+    return DataColumn(
+      label: Text(
+        label,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  List<DataRow> _buildTableRows({required bool isCompact}) {
+    return data.map((row) {
+      return DataRow(
+        cells: [
+          _buildDataCell('Date', row, isCompact),
+          _buildDataCell('Échéance', row, isCompact),
+          _buildDataCell('Tireur', row, isCompact),
+          _buildDataCell('Client', row, isCompact),
+          _buildDataCell('N', row, isCompact),
+          _buildDataCell('BQ', row, isCompact),
+          _buildDataCell('Montant', row, isCompact),
+          _buildDataCell('Type', row, isCompact),
+          DataCell(_buildActionButtons(row)),
+        ],
+      );
+    }).toList();
+  }
+
+  DataCell _buildDataCell(String key, Map<String, dynamic> row, bool isCompact) {
+    return DataCell(
+      Container(
+        constraints: BoxConstraints(
+          maxWidth: isCompact ? 100 : 150,
+        ),
+        child: Text(
+          row[key]?.toString() ?? '',
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(Map<String, dynamic> row) {
+    final index = data.indexOf(row); // Get index of the row
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.edit, size: 20),
+          onPressed: () => onRemoveRow(index), // Fixed: Pass index
+          constraints: const BoxConstraints(
+            minWidth: 40,
+            minHeight: 40,
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+          onPressed: () => onRemoveRow(index), // Fixed: Pass index
+          constraints: const BoxConstraints(
+            minWidth: 40,
+            minHeight: 40,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -539,11 +726,8 @@ class DesktopTableState extends State<DesktopTable> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: ElevatedButton(
-                      onPressed: addRow,
-                      child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(color: Colors.white, Icons.add)),
-                    ),
+                        onPressed: addRow,
+                        child: const Icon(color: Colors.white, Icons.add)),
                   ),
                 ],
               ),

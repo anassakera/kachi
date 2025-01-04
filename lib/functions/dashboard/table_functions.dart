@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+class DesktopTableFunctions {
+  // ...existing desktop table functions...
+}
+
+class PhoneTableFunctions {
+  // ...existing phone table functions...
+}
+
 class TableFunctions {
   final List<Map<String, dynamic>> data;
   final Map<String, FocusNode> focusNodes;

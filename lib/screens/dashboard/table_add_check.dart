@@ -51,6 +51,10 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
     },
   ];
 
+  // إضافة ثوابت للاستجابة
+  static const double _mobileThreshold = 480.0;    // عتبة الموبايل
+  static const double _tabletThreshold = 768.0;    // عتبة التابلت
+
   @override
   void initState() {
     super.initState();
@@ -101,9 +105,9 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
 
   Widget _buildInputForm() {
     return Card(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(MediaQuery.of(context).size.width > _mobileThreshold ? 16 : 8),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width > _mobileThreshold ? 16 : 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,95 +116,11 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _echeanceController,
-                    decoration: const InputDecoration(
-                      labelText: 'Échéance',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextFormField(
-                    controller: _tireurController,
-                    decoration: const InputDecoration(
-                      labelText: 'Tireur',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextFormField(
-                    controller: _clientController,
-                    decoration: const InputDecoration(
-                      labelText: 'Client',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _nController,
-                    decoration: const InputDecoration(
-                      labelText: 'N',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextFormField(
-                    controller: _bqController,
-                    decoration: const InputDecoration(
-                      labelText: 'BQ',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextFormField(
-                    controller: _montantController,
-                    decoration: const InputDecoration(
-                      labelText: 'Montant',
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedType,
-                    decoration: const InputDecoration(
-                      labelText: 'Type',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: ['Check', 'Effet'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedType = value!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
+            // تحسين تخطيط النموذج بناءً على حجم الشاشة
+            if (MediaQuery.of(context).size.width >= _tabletThreshold)
+              _buildDesktopLayout()
+            else
+              _buildMobileLayout(),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _submitForm,
@@ -212,42 +132,189 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          _buildInputForm(),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                if (constraints.maxWidth < 600) {
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: _data.length,
-                    itemBuilder: (context, index) {
-                      return tableWidgets.buildTableRow(
-                          index, _data[index], true);
-                    },
-                  );
-                } else {
-                  return const DesktopTable();
-                  // return SingleChildScrollView(
-                  //   controller: _verticalScrollController,
-                  //   child: SingleChildScrollView(
-                  //     controller: _horizontalScrollController,
-                  //     scrollDirection: Axis.horizontal,
-                  //     child: tableWidgets.buildDesktopTable(),
-                  //   ),
-                  // );
-                }
-              },
-            ),
-          ),
-        ],
+  // إضافة طرق جديدة للتخطيطات المختلفة
+  Widget _buildDesktopLayout() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _buildEcheanceField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildTireurField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildClientField()),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(child: _buildNField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildBQField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildMontantField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildTypeField()),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      children: [
+        _buildEcheanceField(),
+        const SizedBox(height: 12),
+        _buildTireurField(),
+        const SizedBox(height: 12),
+        _buildClientField(),
+        const SizedBox(height: 12),
+        _buildNField(),
+        const SizedBox(height: 12),
+        _buildBQField(),
+        const SizedBox(height: 12),
+        _buildMontantField(),
+        const SizedBox(height: 12),
+        _buildTypeField(),
+      ],
+    );
+  }
+
+  Widget _buildEcheanceField() {
+    return TextFormField(
+      controller: _echeanceController,
+      decoration: const InputDecoration(
+        labelText: 'Échéance',
+        border: OutlineInputBorder(),
       ),
     );
   }
+
+  Widget _buildTireurField() {
+    return TextFormField(
+      controller: _tireurController,
+      decoration: const InputDecoration(
+        labelText: 'Tireur',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildClientField() {
+    return TextFormField(
+      controller: _clientController,
+      decoration: const InputDecoration(
+        labelText: 'Client',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildNField() {
+    return TextFormField(
+      controller: _nController,
+      decoration: const InputDecoration(
+        labelText: 'N',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildBQField() {
+    return TextFormField(
+      controller: _bqController,
+      decoration: const InputDecoration(
+        labelText: 'BQ',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildMontantField() {
+    return TextFormField(
+      controller: _montantController,
+      decoration: const InputDecoration(
+        labelText: 'Montant',
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+    );
+  }
+
+  Widget _buildTypeField() {
+    return DropdownButtonFormField<String>(
+      value: _selectedType,
+      decoration: const InputDecoration(
+        labelText: 'Type',
+        border: OutlineInputBorder(),
+      ),
+      items: ['Check', 'Effet'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedType = value!;
+        });
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.85), // Fixed deprecation
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1), // Fixed deprecation
+            spreadRadius: 1,
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Scaffold(
+        body: Column(
+          children: [
+            _buildInputForm(),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth < 600) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: _data.length,
+                      itemBuilder: (context, index) {
+                        return tableWidgets.buildTableRow(
+                            index, _data[index], true);
+                      },
+                    );
+                  } else {
+                    return const DesktopTable();
+
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  final rowDecoration = BoxDecoration(
+    color: Colors.grey.shade50.withValues(alpha: 0.9), // Fixed deprecation
+    border: Border(
+      bottom: BorderSide(
+        color: Colors.grey.withValues(alpha: 0.1), // Fixed deprecation
+        width: 1,
+      ),
+    ),
+  );
 
   @override
   void dispose() {
