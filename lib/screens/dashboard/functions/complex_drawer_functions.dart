@@ -5,12 +5,14 @@ class DrawerMenuItem {
   final String title;
   final List<DrawerSubMenuItem> submenus;
   final Color? iconColor;
+  final Function(BuildContext)? onTap;
 
   const DrawerMenuItem({
     required this.icon,
     required this.title,
     this.submenus = const [],
     this.iconColor,
+    this.onTap,
   });
 }
 
@@ -62,16 +64,16 @@ class ComplexDrawerFunctions {
 
   void _initializeMenuItems() {
     menuItems = [
-      const DrawerMenuItem(
-        icon: Icons.add_circle_outline_rounded,
-        title: "جديد",
-        iconColor: Color(0xFFFFB74D),
-        submenus: [
+      DrawerMenuItem(
+        icon: Icons.dashboard,
+        title: 'Dashboard',
+        iconColor: const Color(0xFFFFB74D),
+        onTap: (context) => Navigator.pushNamed(context, '/dashboard'),
+        submenus: const [
           DrawerSubMenuItem(
-            title: "إصدار شيك جديد",
-            icon: Icons.create_rounded,
+            title: "Overview",
+            icon: Icons.assessment_rounded,
             iconColor: Color(0xFF7986CB),
-            onPressed: null,
           ),
           // ...more submenu items...
         ],
@@ -79,6 +81,10 @@ class ComplexDrawerFunctions {
       // ...more menu items...
     ];
   }
+
+  void Function() get onProfileTap => () {
+    // Handle profile tap
+  };
 }
 
 class DrawerConstants {

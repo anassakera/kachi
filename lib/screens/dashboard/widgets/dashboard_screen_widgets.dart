@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'complex_drawer.dart';
+import 'package:kachi/screens/dashboard/complex_drawer.dart';
+import '../../../widgets/dashboard/table_widgets.dart';
 
 class DashboardScreenWidgets {
   static const double _largeScreenThreshold = 900.0;
@@ -91,5 +91,15 @@ class DashboardScreenWidgets {
         ],
       ),
     );
+  }
+
+  Widget buildDrawer(BuildContext context) {
+    return const ComplexDrawer();
+  }
+
+  Widget buildTable(BuildContext context) {
+    return MediaQuery.of(context).size.width < 600
+        ? const PhoneTable()
+        : const DesktopTable();
   }
 }
