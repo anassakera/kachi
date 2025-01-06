@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import '../screens/auth/LogIn/login_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/auth/signup_screen.dart';
-import '../screens/analytics/analytics_screen.dart';
-import '../screens/checks/check_list_screen.dart';
-import '../screens/checks/add_check_screen.dart';
-import '../screens/reports/reports_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/user_management_screen.dart';
 import '../screens/dashboard/table_add_check.dart';
@@ -34,10 +30,6 @@ class AppRoutes {
       auth: (context) => const LoginScreen(),
       register: (context) => const MobileSignUpScreen(),
       dashboard: (context) => const DashboardScreen(),
-      analytics: (context) => const AnalyticsScreen(),
-      checks: (context) => const CheckListScreen(),
-      addCheck: (context) => const AddCheckScreen(),
-      reports: (context) => const ReportsScreen(),
       settings: (context) => const SettingsScreen(),
       users: (context) => const UserManagementScreen(),
       tableAddCheck: (context) => const EditableTableScreen(),
