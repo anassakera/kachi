@@ -320,6 +320,8 @@ class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
       child: SizedBox(
         width: isExpanded ? 250 : 70,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
             const Divider(color: Colors.white24),
@@ -339,42 +341,55 @@ class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
       ),
     );
   }
-
-  Widget _buildHeader() {
-    return Container(
-      height: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          GestureDetector(
+Widget _buildHeader() {
+  return Container(
+    // color:  Colors.red,
+    height: 80,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Row(
+      mainAxisSize: MainAxisSize.min, // إضافة هذا السطر
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ConstrainedBox( // استبدال GestureDetector بـ ConstrainedBox
+          constraints: const BoxConstraints(
+            maxWidth: 36,
+            maxHeight: 36,
+          ),
+          child: GestureDetector(
             onTap: () {
               setState(() {
                 isExpanded = !isExpanded;
               });
             },
-            child: const FlutterLogo(size: 40),
-          ),
-          if (isExpanded) ...[
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                "KACHI",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade300,
-                ),
-              ),
+            child: FlutterLogo(
+              size: isExpanded ? 36 : 34, // تقليل الحجم
             ),
-          ],
+          ),
+        ),
+        if (isExpanded) ...[
+          const SizedBox(width: 16),
+          Flexible( // استخدام Flexible بدلاً من عرض النص مباشرة
+            child: Text(
+              "KACHI",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue.shade300,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
 
   Widget _buildMenuItems() {
     return Column(
-      children: menuItems.map((item) => _buildMenuItem(menuItems.indexOf(item)))
+      children: menuItems
+          .map((item) => _buildMenuItem(menuItems.indexOf(item)))
           .toList(),
     );
   }
@@ -392,7 +407,6 @@ class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
             height: 30,
             child: Icon(
               item.icon,
-              // ignore: deprecated_member_use
               color: item.iconColor?.withValues(alpha: 0.9),
               size: 20,
             ),
@@ -453,16 +467,18 @@ class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
       visualDensity: VisualDensity.compact,
     );
   }
-
-  Widget _buildProfile() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min, // Prevent row overflow
-        children: [
-          Container(
-            width: 40,
-            height: 40,
+Widget _buildProfile() {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    child: Row(
+      mainAxisSize: MainAxisSize.min, // إضافة هذا
+      children: [
+        ConstrainedBox( // استبدال Container بـ ConstrainedBox
+          constraints: const BoxConstraints(
+            maxWidth: 36, // تقليل العرض الأقصى
+            maxHeight: 36, // تقليل الارتفاع الأقصى
+          ),
+          child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: Colors.white24,
@@ -470,52 +486,54 @@ class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
             child: const Icon(
               Icons.person,
               color: Colors.white70,
+              size: 20, // تقليل حجم الأيقونة
             ),
           ),
-          if (isExpanded) ...[
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min, // Prevent column overflow
-                children: [
-                  Text(
-                    "User Name",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade300,
-                    ),
-                    overflow: TextOverflow.ellipsis, // Handle text overflow
+        ),
+        if (isExpanded) ...[
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "User Name",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade300,
                   ),
-                  const Text(
-                    "Developer",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white60,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Text(
+                  "Developer",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white60,
                   ),
-                ],
-              ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            IconButton(
-              iconSize: 20, // Smaller icon
-              padding: EdgeInsets.zero, // Remove padding
-              constraints: const BoxConstraints(), // Remove constraints
-              icon: const Icon(
-                Icons.logout_rounded,
-                color: Colors.white70,
-              ),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.auth);
-              },
-              tooltip: 'Logout',
+          ),
+          IconButton(
+            iconSize: 18, // تقليل حجم أيقونة الخروج
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: Colors.white70,
             ),
-          ],
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, AppRoutes.auth);
+            },
+            tooltip: 'Logout',
+          ),
         ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
 }
 
 class CDMenuItem {
@@ -540,4 +558,3 @@ class DrawerSubMenuItem {
     this.onPressed,
   });
 }
-

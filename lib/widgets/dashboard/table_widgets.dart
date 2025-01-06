@@ -161,6 +161,35 @@ class TableWidgets {
     );
   }
 
+  static Widget buildNumericField({
+    required TextEditingController controller,
+    required String labelText,
+    bool allowDecimals = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.numberWithOptions(decimal: allowDecimals),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(
+            allowDecimals ? RegExp(r'[0-9.]') : RegExp(r'[0-9]'),
+          ),
+        ],
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget buildMobileField(
       String label, int rowIndex, String key, TextInputType keyboardType) {
     return Padding(
@@ -530,7 +559,7 @@ class DesktopTableState extends State<DesktopTable> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text('جميع الحقول مطلوبة: الاستحقاق، الساحب، العميل، والمبلغ'),
+              Text('جميع الحقول مطلوبة: Echeance; Tireur; Client; N°; Banque; Montant; Type'),
           backgroundColor: Colors.red,
         ),
       );
@@ -586,8 +615,7 @@ class DesktopTableState extends State<DesktopTable> {
         'N°': controllers[4].text,
         'Banque': controllers[5].text,
         'Montant': montantDouble.toStringAsFixed(2),
-        'Type':
-            controllers[7].text.isEmpty ? typeOptions[0] : controllers[7].text,
+        'type': controllers[7].text.isEmpty ? typeOptions[0] : controllers[7].text,
       });
 
       // Clear all controllers
@@ -680,6 +708,7 @@ class DesktopTableState extends State<DesktopTable> {
               8: const FixedColumnWidth(120),
             },
             children: [
+
               TableRow(
                 children: [
                   Padding(
@@ -718,11 +747,67 @@ class DesktopTableState extends State<DesktopTable> {
                               });
                             },
                           )
-                        : TableWidgets.customTextField(
-                            controller: controllers[i],
-                            labelText:
-                                headersOfTheTable[i], // Fixed syntax here
-                          ),
+                        : i == 4 // N° field
+                            ? TableWidgets.buildNumericField(
+                                controller: controllers[i],
+                                labelText: headersOfTheTable[i],
+                                allowDecimals: false,
+                              )
+                            : i == 6 // Montant field
+                                ? TableWidgets.buildNumericField(
+                                    controller: controllers[i],
+                                    labelText: headersOfTheTable[i],
+                                    allowDecimals: true,
+                                  )
+                                : i == 7 // Check if this is the Type field
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: DropdownButtonFormField<String>(
+                                          value: controllers[i].text.isEmpty
+                                              ? typeOptions[0]
+                                              : controllers[i].text,
+                                          decoration: InputDecoration(
+                                            labelText: headersOfTheTable[i],
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(8.0),
+                                            ),
+                                            contentPadding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 16,
+                                            ),
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black87,
+                                          ),
+                                          icon: const Icon(Icons.arrow_drop_down),
+                                          isExpanded: true,
+                                          dropdownColor: Colors.white,
+                                          elevation: 2,
+                                          items: typeOptions.map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? value) {
+                                            if (value != null) {
+                                              setState(() {
+                                                controllers[i].text = value;
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    : TableWidgets.customTextField(
+                                        controller: controllers[i],
+                                        labelText: headersOfTheTable[i],
+                                      ),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: ElevatedButton(
@@ -731,6 +816,7 @@ class DesktopTableState extends State<DesktopTable> {
                   ),
                 ],
               ),
+              
               TableRow(
                 decoration: const BoxDecoration(
                   color: Color(0xFFF5F5F5),
@@ -892,7 +978,7 @@ class PhoneTableState extends State<PhoneTable> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text('جميع الحقول مطلوبة: الاستحقاق، الساحب، العميل، والمبلغ'),
+              Text('جميع الحقول مطلوبة: Echeance; Tireur; Client; N°; Banque; Montant; Type'),
           backgroundColor: Colors.red,
         ),
       );
