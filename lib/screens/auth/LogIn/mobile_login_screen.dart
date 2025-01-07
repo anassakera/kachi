@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../functions/auth_functions.dart';
+import '../../../functions/auth/auth_functions.dart';
 import '../../../routes/app_routes.dart';
 
 class MobileLoginScreen extends StatefulWidget {

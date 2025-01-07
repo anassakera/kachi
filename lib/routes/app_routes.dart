@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/auth/LogIn/login_screen.dart';
+import '../screens/auth/Signup/desktop_signUp_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
-import '../screens/auth/signup_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/user_management_screen.dart';
 import '../screens/dashboard/table_add_check.dart';

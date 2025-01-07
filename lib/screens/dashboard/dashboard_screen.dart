@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'widgets/dashboard_screen_widgets.dart';
-import 'functions/dashboard_screen_functions.dart';
+import '../../widgets/dashboard/dashboard_screen_widgets.dart';
+import '../../functions/dashboard/dashboard_screen_functions.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

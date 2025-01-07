@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../routes/app_routes.dart';
-import '../functions/complex_drawer_functions.dart';
+import '../../routes/app_routes.dart';
+import '../../functions/dashboard/complex_drawer_functions.dart';
 
 class ComplexDrawerWidgets extends StatefulWidget {
   const ComplexDrawerWidgets({super.key});

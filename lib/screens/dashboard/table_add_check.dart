@@ -1,7 +1,8 @@
 // table_add_check.dart
 import 'package:flutter/material.dart';
 import '../../functions/dashboard/table_functions.dart';
-import '../../widgets/dashboard/table_widgets.dart';
+import 'table_widgets.dart';
+
 
 class EditableTableScreen extends StatefulWidget {
   const EditableTableScreen({super.key});
@@ -29,26 +30,6 @@ class _EditableTableScreenState extends State<EditableTableScreen> {
   late TableWidgets tableWidgets;
 
   List<Map<String, dynamic>> sampleData = [
-    {
-      'date': '01/01/2025',
-      'echeance': '05/01/2025',
-      'tireur': 'John Doe',
-      'client': 'Client A',
-      'n': '123',
-      'bq': 'Bank XYZ',
-      'montant': '1000 MAD',
-      'type': 'Credit',
-    },
-    {
-      'date': '02/01/2025',
-      'echeance': '06/01/2025',
-      'tireur': 'Jane Doe',
-      'client': 'Client B',
-      'n': '124',
-      'bq': 'Bank ABC',
-      'montant': '2000 MAD',
-      'type': 'Debit',
-    },
   ];
 
   // إضافة ثوابت للاستجابة
