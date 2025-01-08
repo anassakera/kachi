@@ -5,6 +5,7 @@ import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/user_management_screen.dart';
 import '../screens/dashboard/table_add_check.dart';
+import '../screens/test/test.dart';
 
 class AppRoutes {
   // Auth Routes
@@ -12,7 +13,8 @@ class AppRoutes {
   static const String register = '/auth/register';
 
   // Main Routes
-  static const String dashboard = '/';
+  static const String splashScreen = '/';
+  static const String dashboard = '/dashboard';
   static const String tableAddCheck = '/table-add-check';
   static const String analytics = '/analytics';
 
@@ -27,6 +29,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
+      splashScreen: (context) => const SplashScreen(),
       auth: (context) => const LoginScreen(),
       register: (context) => const MobileSignUpScreen(),
       dashboard: (context) => const DashboardScreen(),
