@@ -22,27 +22,6 @@ class _MobileLoginScreenState extends State<MobileLoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // const Text(
-            //   'مرحبًا بعودتك!',
-            //   style: TextStyle(
-            //     fontFamily: 'Rubik',
-            //     fontSize: 24,
-            //     fontWeight: FontWeight.bold,
-            //     color: Color(0xFF424242),
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // const Text(
-            //   'من فضلك سجل الدخول إلى حسابك',
-            //   style: TextStyle(
-            //     fontFamily: 'Rubik',
-            //     fontSize: 14,
-            //     fontWeight: FontWeight.normal,
-            //     color: Color(0xFFBDBDBD),
-            //   ),
-            // ),
-            // const SizedBox(height: 24),
-            // إضافة الصورة هنا
             Image.asset(
               'assets/images/loginImage.png',
               height: 200, // يمكنك تعديل الارتفاع حسب احتياجاتك

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../screens/auth/LogIn/login_screen.dart';
-import '../screens/auth/Signup/desktop_signUp_screen.dart';
+import '../screens/auth/Signup/phone_signup_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/user_management_screen.dart';
 import '../screens/dashboard/table_add_check.dart';
-import '../screens/test/test.dart';
+import '../screens/splash/splash_screen.dart';
 
 class AppRoutes {
   // Auth Routes
