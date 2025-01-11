@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
+import '../../functions/dashboard/table_functions.dart';
+
 class DateInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -73,20 +75,16 @@ bool isValidDate(String input) {
   }
 }
 
-class DesktopTableWidgets {
-  // ...existing desktop table widget methods...
-}
-
-class PhoneTableWidgets {
-  // ...existing phone table widget methods...
-}
-
 class TableWidgets {
   final List<Map<String, dynamic>> data;
   final Map<String, FocusNode> focusNodes;
   final Function(int, String, String, TextInputType) onFieldSubmission;
   final Function(int) onRemoveRow;
   final Function(int, String, dynamic) updateValue;
+
+  // إضافة ثوابت للاستجابة
+  static const double _mobileThreshold = 480.0; // عتبة الموبايل
+  static const double _tabletThreshold = 768.0; // عتبة التابلت
 
   TableWidgets({
     required this.data,
@@ -190,7 +188,7 @@ class TableWidgets {
     );
   }
 
-  Widget buildMobileField(
+  static Widget buildMobileField(
       String label, int rowIndex, String key, TextInputType keyboardType) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -314,13 +312,12 @@ class TableWidgets {
     );
   }
 
-  // إضافة ثوابت للتجاوب
   static const double _mobileBreakpoint = 480.0;
   static const double _tabletBreakpoint = 768.0;
 
   Widget buildResponsiveTable(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    
+
     if (width < _mobileBreakpoint) {
       return _buildMobileTable();
     } else if (width < _tabletBreakpoint) {
@@ -365,12 +362,14 @@ class TableWidgets {
             children: [
               IconButton(
                 icon: const Icon(Icons.edit),
-                onPressed: () => onRemoveRow(data.indexOf(rowData)), // Fixed: Pass index instead of Map
+                onPressed: () => onRemoveRow(
+                    data.indexOf(rowData)), // Fixed: Pass index instead of Map
               ),
               IconButton(
                 icon: const Icon(Icons.delete),
                 color: Colors.red,
-                onPressed: () => onRemoveRow(data.indexOf(rowData)), // Fixed: Pass index instead of Map
+                onPressed: () => onRemoveRow(
+                    data.indexOf(rowData)), // Fixed: Pass index instead of Map
               ),
             ],
           ),
@@ -379,7 +378,7 @@ class TableWidgets {
     );
   }
 
-  Widget _buildDetailRow(String label, dynamic value) {
+  static Widget _buildDetailRow(String label, dynamic value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -425,6 +424,63 @@ class TableWidgets {
     );
   }
 
+  static Widget buttonsAction(
+    BuildContext context, {
+    required VoidCallback onAddPressed,
+    required VoidCallback onCloudPressed,
+    required bool hasUnsavedChanges,
+    required bool isSaving,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: hasUnsavedChanges ? Colors.orange : Colors.teal[600],
+          ),
+          child: IconButton(
+            icon: isSaving
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(
+                    Icons.cloud,
+                    color: Colors.white,
+                  ),
+            onPressed:
+                isSaving ? null : (hasUnsavedChanges ? onCloudPressed : null),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          height: 24,
+          width: 1,
+          color: Colors.grey[300],
+        ),
+        const SizedBox(width: 8),
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.teal[600],
+          ),
+          child: IconButton(
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: onAddPressed,
+          ),
+        ),
+      ],
+    );
+  }
+
   List<DataColumn> _buildTableColumns() {
     return [
       _buildDataColumn('Date'),
@@ -466,7 +522,8 @@ class TableWidgets {
     }).toList();
   }
 
-  DataCell _buildDataCell(String key, Map<String, dynamic> row, bool isCompact) {
+  DataCell _buildDataCell(
+      String key, Map<String, dynamic> row, bool isCompact) {
     return DataCell(
       Container(
         constraints: BoxConstraints(
@@ -503,6 +560,205 @@ class TableWidgets {
         ),
       ],
     );
+  }
+
+  static Widget buildInputForm(
+    BuildContext context, {
+    required TableFunctions tableFunctions,
+  }) {
+    return TableForm(tableFunctions: tableFunctions);
+  }
+}
+
+class TableForm extends StatefulWidget {
+  final TableFunctions tableFunctions;
+
+  const TableForm({
+    super.key,
+    required this.tableFunctions,
+  });
+
+  @override
+  State<TableForm> createState() => _TableFormState();
+}
+
+class _TableFormState extends State<TableForm> {
+  final _echeanceController = TextEditingController();
+  final _tireurController = TextEditingController();
+  final _clientController = TextEditingController();
+  final _nController = TextEditingController();
+  final _bqController = TextEditingController();
+  final _montantController = TextEditingController();
+  String _selectedType = 'CHEQUE';
+
+  Widget buildInputForm() {
+    return Card(
+      margin: EdgeInsets.all(
+          MediaQuery.of(context).size.width > TableWidgets._mobileThreshold
+              ? 16
+              : 8),
+      child: Padding(
+        padding: EdgeInsets.all(
+            MediaQuery.of(context).size.width > TableWidgets._mobileThreshold
+                ? 16
+                : 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'إضافة سجل جديد',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            if (MediaQuery.of(context).size.width >=
+                TableWidgets._tabletThreshold)
+              _buildDesktopLayout()
+            else
+              _buildMobileLayout(),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: widget.tableFunctions.submitForm,
+              child: const Text('إضافة السجل'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _buildEcheanceField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildTireurField()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildClientField()),
+          ],
+        ),
+        // ...rest of desktop layout...
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      children: [
+        _buildEcheanceField(),
+        const SizedBox(height: 12),
+        _buildTireurField(),
+        const SizedBox(height: 12),
+        _buildClientField(),
+        const SizedBox(height: 12),
+        _buildNField(),
+        const SizedBox(height: 12),
+        _buildBQField(),
+        const SizedBox(height: 12),
+        _buildMontantField(),
+        const SizedBox(height: 12),
+        _buildTypeField(),
+      ],
+    );
+  }
+
+  Widget _buildEcheanceField() {
+    return TextFormField(
+      controller: _echeanceController,
+      decoration: const InputDecoration(
+        labelText: 'Échéance',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildTireurField() {
+    return TextFormField(
+      controller: _tireurController,
+      decoration: const InputDecoration(
+        labelText: 'Tireur',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildClientField() {
+    return TextFormField(
+      controller: _clientController,
+      decoration: const InputDecoration(
+        labelText: 'Client',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildNField() {
+    return TextFormField(
+      controller: _nController,
+      decoration: const InputDecoration(
+        labelText: 'N',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildBQField() {
+    return TextFormField(
+      controller: _bqController,
+      decoration: const InputDecoration(
+        labelText: 'BQ',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildMontantField() {
+    return TextFormField(
+      controller: _montantController,
+      decoration: const InputDecoration(
+        labelText: 'Montant',
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+    );
+  }
+
+  Widget _buildTypeField() {
+    return DropdownButtonFormField<String>(
+      value: _selectedType,
+      decoration: const InputDecoration(
+        labelText: 'Type',
+        border: OutlineInputBorder(),
+      ),
+      items: ['Check', 'Effet'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedType = value!;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _echeanceController.dispose();
+    _tireurController.dispose();
+    _clientController.dispose();
+    _nController.dispose();
+    _bqController.dispose();
+    _montantController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildInputForm();
   }
 }
 
@@ -558,8 +814,8 @@ class DesktopTableState extends State<DesktopTable> {
       // Montant
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:
-              Text('جميع الحقول مطلوبة: Echeance; Tireur; Client; N°; Banque; Montant; Type'),
+          content: Text(
+              'جميع الحقول مطلوبة: Echeance; Tireur; Client; N°; Banque; Montant; Type'),
           backgroundColor: Colors.red,
         ),
       );
@@ -615,7 +871,8 @@ class DesktopTableState extends State<DesktopTable> {
         'N°': controllers[4].text,
         'Banque': controllers[5].text,
         'Montant': montantDouble.toStringAsFixed(2),
-        'type': controllers[7].text.isEmpty ? typeOptions[0] : controllers[7].text,
+        'type':
+            controllers[7].text.isEmpty ? typeOptions[0] : controllers[7].text,
       });
 
       // Clear all controllers
@@ -708,32 +965,13 @@ class DesktopTableState extends State<DesktopTable> {
               8: const FixedColumnWidth(120),
             },
             children: [
-
               TableRow(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor:
-                            hasUnsavedChanges ? Colors.orange : Colors.green,
-                      ),
-                      onPressed: isSaving
-                          ? null
-                          : (hasUnsavedChanges ? handleSave : null),
-                      child: isSaving
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : Text(
-                              hasUnsavedChanges ? 'هناك تعديلات' : 'حفظ',
-                              style: const TextStyle(color: Colors.white),
-                            ),
+                  TextFormField(
+                    controller: controllers[0],
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                      border: OutlineInputBorder(),
                     ),
                   ),
                   for (int i = 1; i < 8; i++)
@@ -769,9 +1007,11 @@ class DesktopTableState extends State<DesktopTable> {
                                           decoration: InputDecoration(
                                             labelText: headersOfTheTable[i],
                                             border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(8.0),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
                                             ),
-                                            contentPadding: const EdgeInsets.symmetric(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
                                               horizontal: 12,
                                               vertical: 16,
                                             ),
@@ -780,11 +1020,13 @@ class DesktopTableState extends State<DesktopTable> {
                                             fontSize: 14,
                                             color: Colors.black87,
                                           ),
-                                          icon: const Icon(Icons.arrow_drop_down),
+                                          icon:
+                                              const Icon(Icons.arrow_drop_down),
                                           isExpanded: true,
                                           dropdownColor: Colors.white,
                                           elevation: 2,
-                                          items: typeOptions.map((String value) {
+                                          items:
+                                              typeOptions.map((String value) {
                                             return DropdownMenuItem<String>(
                                               value: value,
                                               child: Text(
@@ -809,14 +1051,18 @@ class DesktopTableState extends State<DesktopTable> {
                                         labelText: headersOfTheTable[i],
                                       ),
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                        onPressed: addRow,
-                        child: const Icon(color: Colors.white, Icons.add)),
-                  ),
+                      padding: const EdgeInsets.all(8),
+                      child: TableWidgets.buttonsAction(
+                        context,
+                        onAddPressed: () {
+                          addRow();
+                        },
+                        onCloudPressed: handleSave,
+                        hasUnsavedChanges: hasUnsavedChanges,
+                        isSaving: isSaving,
+                      )),
                 ],
               ),
-              
               TableRow(
                 decoration: const BoxDecoration(
                   color: Color(0xFFF5F5F5),
@@ -977,8 +1223,8 @@ class PhoneTableState extends State<PhoneTable> {
       // Montant
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:
-              Text('جميع الحقول مطلوبة: Echeance; Tireur; Client; N°; Banque; Montant; Type'),
+          content: Text(
+              'جميع الحقول مطلوبة: Echeance; Tireur; Client; N°; Banque; Montant; Type'),
           backgroundColor: Colors.red,
         ),
       );

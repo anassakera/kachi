@@ -10,7 +10,7 @@ class ComplexDrawerWidgets extends StatefulWidget {
 }
 
 class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
-  bool isExpanded = false;
+  bool isExpanded = true;
   int selectedIndex = 0;
   late List<CDMenuItem> menuItems;
 
@@ -341,50 +341,53 @@ class ComplexDrawerWidgetsState extends State<ComplexDrawerWidgets> {
       ),
     );
   }
-Widget _buildHeader() {
-  return Container(
-    // color:  Colors.red,
-    height: 80,
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Row(
-      mainAxisSize: MainAxisSize.min, // إضافة هذا السطر
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ConstrainedBox( // استبدال GestureDetector بـ ConstrainedBox
-          constraints: const BoxConstraints(
-            maxWidth: 36,
-            maxHeight: 36,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
-            },
-            child: FlutterLogo(
-              size: isExpanded ? 36 : 34, // تقليل الحجم
+
+  Widget _buildHeader() {
+    return Container(
+      // color:  Colors.red,
+      height: 80,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // إضافة هذا السطر
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ConstrainedBox(
+            // استبدال GestureDetector بـ ConstrainedBox
+            constraints: const BoxConstraints(
+              maxWidth: 36,
+              maxHeight: 36,
             ),
-          ),
-        ),
-        if (isExpanded) ...[
-          const SizedBox(width: 16),
-          Flexible( // استخدام Flexible بدلاً من عرض النص مباشرة
-            child: Text(
-              "KACHI",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue.shade300,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+              child: FlutterLogo(
+                size: isExpanded ? 36 : 34, // تقليل الحجم
               ),
-              overflow: TextOverflow.ellipsis,
             ),
           ),
+          if (isExpanded) ...[
+            const SizedBox(width: 16),
+            Flexible(
+              // استخدام Flexible بدلاً من عرض النص مباشرة
+              child: Text(
+                "KACHI",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade300,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ],
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
 
   Widget _buildMenuItems() {
     return Column(
@@ -467,73 +470,75 @@ Widget _buildHeader() {
       visualDensity: VisualDensity.compact,
     );
   }
-Widget _buildProfile() {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    child: Row(
-      mainAxisSize: MainAxisSize.min, // إضافة هذا
-      children: [
-        ConstrainedBox( // استبدال Container بـ ConstrainedBox
-          constraints: const BoxConstraints(
-            maxWidth: 36, // تقليل العرض الأقصى
-            maxHeight: 36, // تقليل الارتفاع الأقصى
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white24,
+
+  Widget _buildProfile() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // إضافة هذا
+        children: [
+          ConstrainedBox(
+            // استبدال Container بـ ConstrainedBox
+            constraints: const BoxConstraints(
+              maxWidth: 36, // تقليل العرض الأقصى
+              maxHeight: 36, // تقليل الارتفاع الأقصى
             ),
-            child: const Icon(
-              Icons.person,
-              color: Colors.white70,
-              size: 20, // تقليل حجم الأيقونة
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white24,
+              ),
+              child: const Icon(
+                Icons.person,
+                color: Colors.white70,
+                size: 20, // تقليل حجم الأيقونة
+              ),
             ),
           ),
-        ),
-        if (isExpanded) ...[
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "User Name",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade300,
+          if (isExpanded) ...[
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "User Name",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade300,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const Text(
-                  "Developer",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
+                  const Text(
+                    "Developer",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white60,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          IconButton(
-            iconSize: 18, // تقليل حجم أيقونة الخروج
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            icon: const Icon(
-              Icons.logout_rounded,
-              color: Colors.white70,
+            IconButton(
+              iconSize: 18, // تقليل حجم أيقونة الخروج
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              icon: const Icon(
+                Icons.logout_rounded,
+                color: Colors.white70,
+              ),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.auth);
+              },
+              tooltip: 'Logout',
             ),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, AppRoutes.auth);
-            },
-            tooltip: 'Logout',
-          ),
+          ],
         ],
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
 }
 
 class CDMenuItem {

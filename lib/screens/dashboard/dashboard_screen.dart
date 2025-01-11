@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/dashboard/dashboard_screen_widgets.dart';
-import '../../functions/dashboard/dashboard_screen_functions.dart';
+import 'complex_drawer.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -10,17 +10,19 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final DashboardScreenFunctions _functions = DashboardScreenFunctions();
-  final DashboardScreenWidgets _widgets = DashboardScreenWidgets();
-
-  @override
-  void dispose() {
-    _functions.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _widgets.buildDashboard(context);
+    return Scaffold(
+      backgroundColor: Colors.grey.shade300.withValues(alpha: 0.95),
+      appBar: DashboardScreenWidgets.buildAppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DashboardScreenWidgets.buildBody(context),
+      ),
+      drawer: DashboardScreenWidgets.isLargeScreen(context)
+          ? null
+          : const ComplexDrawer(),
+      drawerScrimColor: Colors.black38,
+    );
   }
 }

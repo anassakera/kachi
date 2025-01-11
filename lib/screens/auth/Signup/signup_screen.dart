@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kachi/screens/auth/Signup/desktop_signup_screen.dart';
-import 'desktop_signUp_screen.dart';
+import 'desktop_signup_screen.dart';
+import 'phone_signup_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});

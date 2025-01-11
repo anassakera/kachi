@@ -1,32 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kachi/screens/dashboard/complex_drawer.dart';
 
-import '../../screens/dashboard/table_widgets.dart';
-
+import 'table_widgets.dart';
 
 class DashboardScreenWidgets {
   static const double _largeScreenThreshold = 900.0;
   static const double _mediumScreenThreshold = 600.0;
 
-  Widget buildDashboard(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.grey.shade100.withValues(alpha: 0.95),
-        appBar: _buildAppBar(),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _buildBody(context),
-        ),
-        drawer: _isLargeScreen(context) ? null : const ComplexDrawer(),
-        drawerScrimColor: Colors.black38,
-      ),
-    );
-  }
-
-  bool _isLargeScreen(BuildContext context) =>
+  static bool isLargeScreen(BuildContext context) =>
       MediaQuery.of(context).size.width >= _largeScreenThreshold;
 
-  PreferredSizeWidget _buildAppBar() {
+  static buildAppBar() {
     return AppBar(
       elevation: 0,
       backgroundColor: const Color(0xFF1a1c1e).withValues(alpha: 0.95),
@@ -48,7 +32,7 @@ class DashboardScreenWidgets {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  static Widget buildBody(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.9),

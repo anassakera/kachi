@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/auth/LogIn/login_screen.dart';
-import '../screens/auth/Signup/phone_signup_screen.dart';
+import '../screens/auth/Signup/signup_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
-import '../screens/settings/settings_screen.dart';
-import '../screens/settings/user_management_screen.dart';
 import '../screens/dashboard/table_add_check.dart';
 import '../screens/splash/splash_screen.dart';
 
@@ -31,11 +29,9 @@ class AppRoutes {
     return {
       splashScreen: (context) => const SplashScreen(),
       auth: (context) => const LoginScreen(),
-      register: (context) => const MobileSignUpScreen(),
+      register: (context) => const SignUpScreen(),
       dashboard: (context) => const DashboardScreen(),
-      settings: (context) => const SettingsScreen(),
-      users: (context) => const UserManagementScreen(),
-      tableAddCheck: (context) => const EditableTableScreen(),
+      tableAddCheck: (context) => const TableAddCheck(),
     };
   }
 

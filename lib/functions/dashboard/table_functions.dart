@@ -15,12 +15,27 @@ class TableFunctions {
   final BuildContext context;
   final Function(Map<String, dynamic>) insertNewRow;
 
+  final TextEditingController echeanceController;
+  final TextEditingController tireurController;
+  final TextEditingController clientController;
+  final TextEditingController nController;
+  final TextEditingController bqController;
+  final TextEditingController montantController;
+  String selectedType;
+
   TableFunctions({
     required this.data,
     required this.focusNodes,
     required this.setState,
     required this.context,
     required this.insertNewRow,
+    required this.echeanceController,
+    required this.tireurController,
+    required this.clientController,
+    required this.nController,
+    required this.bqController,
+    required this.montantController,
+    this.selectedType = 'Check',
   });
 
   void initializeFocusNodes() {
@@ -151,5 +166,29 @@ class TableFunctions {
         focusNodes[key] = FocusNode();
       }
     });
+  }
+
+  void submitForm() {
+    final newRow = {
+      'Date': DateTime.now(),
+      'Échéance': echeanceController.text,
+      'Tireur': tireurController.text,
+      'Client': clientController.text,
+      'N': nController.text,
+      'BQ': bqController.text,
+      'Montant': montantController.text,
+      'Type': selectedType,
+    };
+
+    insertNewRow(newRow);
+
+    // Clear form
+    echeanceController.clear();
+    tireurController.clear();
+    clientController.clear();
+    nController.clear();
+    bqController.clear();
+    montantController.clear();
+    selectedType = 'Check';
   }
 }

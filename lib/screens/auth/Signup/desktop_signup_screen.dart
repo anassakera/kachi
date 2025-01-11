@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-
 import '../../../routes/app_routes.dart';
 import '../../../widgets/auth/signup_widgets.dart';
 
@@ -51,8 +49,8 @@ class _DesktopSignUpScreenState extends State<DesktopSignUpScreen> {
             children: [
               Expanded(
                 flex: 2,
-                child: Form(
-                  key: _formKey,
+                child: SingleChildScrollView(
+                  // Added ScrollView
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -78,43 +76,47 @@ class _DesktopSignUpScreenState extends State<DesktopSignUpScreen> {
                       const SizedBox(height: 32),
                       SizedBox(
                         width: 500, // تحديد العرض
-                        child: Column(
-                          children: [
-                            SignupWidgets.buildFormField(
-                              'الاسم الكامل',
-                              'أدخل اسمك الكامل',
-                              controller: _nameController,
-                            ),
-                            const SizedBox(height: 16),
-                            SignupWidgets.buildFormField(
-                              'البريد الإلكتروني',
-                              'أدخل بريدك الإلكتروني',
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                            const SizedBox(height: 16),
-                            SignupWidgets.buildFormField(
-                              'كلمة المرور',
-                              'أدخل كلمة المرور',
-                              isPassword: true,
-                              controller: _passwordController,
-                            ),
-                            const SizedBox(height: 16),
-                            SignupWidgets.buildFormField(
-                              'تأكيد كلمة المرور',
-                              'أعد إدخال كلمة المرور',
-                              isPassword: true,
-                              controller: _confirmPasswordController,
-                            ),
-                            const SizedBox(height: 24),
-                            SignupWidgets.buildSignUpButton(_handleSignUp),
-                            const SizedBox(height: 16),
-                            SignupWidgets.buildDivider(),
-                            const SizedBox(height: 16),
-                            SignupWidgets.buildWhatsAppButton(),
-                            const SizedBox(height: 16),
-                            SignupWidgets.buildLoginLink(context),
-                          ],
+                        child: Form(
+                          // Added Form widget here
+                          key: _formKey, // Connected the GlobalKey
+                          child: Column(
+                            children: [
+                              SignupWidgets.buildFormField(
+                                'الاسم الكامل',
+                                'أدخل اسمك الكامل',
+                                controller: _nameController,
+                              ),
+                              const SizedBox(height: 16),
+                              SignupWidgets.buildFormField(
+                                'البريد الإلكتروني',
+                                'أدخل بريدك الإلكتروني',
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              const SizedBox(height: 16),
+                              SignupWidgets.buildFormField(
+                                'كلمة المرور',
+                                'أدخل كلمة المرور',
+                                isPassword: true,
+                                controller: _passwordController,
+                              ),
+                              const SizedBox(height: 16),
+                              SignupWidgets.buildFormField(
+                                'تأكيد كلمة المرور',
+                                'أعد إدخال كلمة المرور',
+                                isPassword: true,
+                                controller: _confirmPasswordController,
+                              ),
+                              const SizedBox(height: 24),
+                              SignupWidgets.buildSignUpButton(_handleSignUp),
+                              const SizedBox(height: 16),
+                              SignupWidgets.buildDivider(),
+                              const SizedBox(height: 16),
+                              SignupWidgets.buildWhatsAppButton(),
+                              const SizedBox(height: 16),
+                              SignupWidgets.buildLoginLink(context),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -125,7 +127,7 @@ class _DesktopSignUpScreenState extends State<DesktopSignUpScreen> {
                 flex: 3,
                 child: Image.asset(
                   'assets/images/signupImage.png',
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ],

@@ -106,7 +106,6 @@ class _MobileLoginScreenState extends State<MobileLoginScreen> {
               ],
             ),
             const SizedBox(height: 16),
-
             OutlinedButton(
               onPressed: () async {
                 try {
@@ -147,7 +146,6 @@ class _MobileLoginScreenState extends State<MobileLoginScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
