@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'constant/app_theme.dart';
 import 'constant/constants.dart';
-import 'routes/app_routes.dart';
+import 'screens/dashboard/dashboard_screen.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -33,9 +33,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: Constants.supportedLanguages.map(
         (lang) => Locale(lang),
       ),
-      initialRoute: AppRoutes.splashScreen,
-      routes: AppRoutes.getRoutes(),
-      onUnknownRoute: AppRoutes.onGenerateRoute,
+      home: const DashboardScreen(),
+      // initialRoute: AppRoutes.splashScreen,
+      // routes: AppRoutes.getRoutes(),
+      // onUnknownRoute: AppRoutes.onGenerateRoute,
     );
   }
 }
