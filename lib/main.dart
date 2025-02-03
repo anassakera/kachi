@@ -33,10 +33,17 @@ class MyApp extends StatelessWidget {
       supportedLocales: Constants.supportedLanguages.map(
         (lang) => Locale(lang),
       ),
+<<<<<<< HEAD
       home: const InvoiceCreateScreen(),
       // initialRoute: AppRoutes.splashScreen,
       // routes: AppRoutes.getRoutes(),
       // onUnknownRoute: AppRoutes.onGenerateRoute,
+=======
+      // home: const DashboardScreen(),
+      initialRoute: AppRoutes.splashScreen,
+      routes: AppRoutes.getRoutes(),
+      onUnknownRoute: AppRoutes.onGenerateRoute,
+>>>>>>> 0666894919f2fc7a620f5d270054907408d78f03
     );
   }
 }
