@@ -1,0 +1,2 @@
+C:/Users/anass/Documents/GitHub/kachi/android/app/.cxx/Debug/5pd2wv1l/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/anass/Documents/GitHub/kachi/android/app/.cxx/Debug/5pd2wv1l/armeabi-v7a/CMakeFiles/rebuild_cache.dir

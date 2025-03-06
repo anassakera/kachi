@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:kachi/invoice.dart';
+// import 'package:kachi/routes/app_routes.dart';
+import 'package:kachi/screens/test/home_screen.dart';
 import 'constant/app_theme.dart';
 import 'constant/constants.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -12,8 +12,9 @@ void main() async {
   //   url: 'https://alrsbtwzpqqyiuxokwwp.supabase.co',
   //   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscnNidHd6cHFxeWl1eG9rd3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxNjI4ODIsImV4cCI6MjA1MTczODg4Mn0.rTxpOP5MAikTtNSoZf9CO3lJ5V91hAIgSj4crfGmAYY',
   // );
-
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: Constants.supportedLanguages.map(
         (lang) => Locale(lang),
       ),
-      home: const InvoiceCreateScreen(),
+      home: const HomeScreen(),
       // initialRoute: AppRoutes.splashScreen,
       // routes: AppRoutes.getRoutes(),
       // onUnknownRoute: AppRoutes.onGenerateRoute,

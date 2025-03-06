@@ -45,50 +45,54 @@ class _MobileSignUpScreenState extends State<MobileSignUpScreen> {
         constraints: BoxConstraints(
           minHeight: MediaQuery.of(context).size.height,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/signupImage.png',
-              height: 300,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 32),
-            SignupWidgets.buildFormField(
-              'الاسم الكامل',
-              'أدخل اسمك الكامل',
-              controller: _nameController,
-            ),
-            const SizedBox(height: 16),
-            SignupWidgets.buildFormField(
-              'البريد الإلكتروني',
-              'أدخل بريدك الإلكتروني',
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 16),
-            SignupWidgets.buildFormField(
-              'كلمة المرور',
-              'أدخل كلمة المرور',
-              isPassword: true,
-              controller: _passwordController,
-            ),
-            const SizedBox(height: 16),
-            SignupWidgets.buildFormField(
-              'تأكيد كلمة المرور',
-              'أعد إدخال كلمة المرور',
-              isPassword: true,
-              controller: _confirmPasswordController,
-            ),
-            const SizedBox(height: 24),
-            SignupWidgets.buildSignUpButton(_handleSignUp),
-            const SizedBox(height: 16),
-            SignupWidgets.buildDivider(),
-            const SizedBox(height: 16),
-            SignupWidgets.buildWhatsAppButton(),
-            const SizedBox(height: 16),
-            SignupWidgets.buildLoginLink(context),
-          ],
+        child: Form(
+          // Added Form widget
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/signupImage.png',
+                height: 300,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 32),
+              SignupWidgets.buildFormField(
+                'الاسم الكامل',
+                'أدخل اسمك الكامل',
+                controller: _nameController,
+              ),
+              const SizedBox(height: 16),
+              SignupWidgets.buildFormField(
+                'البريد الإلكتروني',
+                'أدخل بريدك الإلكتروني',
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16),
+              SignupWidgets.buildFormField(
+                'كلمة المرور',
+                'أدخل كلمة المرور',
+                isPassword: true,
+                controller: _passwordController,
+              ),
+              const SizedBox(height: 16),
+              SignupWidgets.buildFormField(
+                'تأكيد كلمة المرور',
+                'أعد إدخال كلمة المرور',
+                isPassword: true,
+                controller: _confirmPasswordController,
+              ),
+              const SizedBox(height: 24),
+              SignupWidgets.buildSignUpButton(_handleSignUp),
+              const SizedBox(height: 16),
+              SignupWidgets.buildDivider(),
+              const SizedBox(height: 16),
+              SignupWidgets.buildWhatsAppButton(),
+              const SizedBox(height: 16),
+              SignupWidgets.buildLoginLink(context),
+            ],
+          ),
         ),
       ),
     );
